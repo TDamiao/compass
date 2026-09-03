@@ -1,0 +1,19 @@
+# Local/runtime artifacts
+__pycache__/
+*.py[cod]
+.DS_Store
+*.log
+*.tmp
+
+# Secrets and local configuration
+.env
+.env.*
+.codex/
+.agents/
+.hermes/
+.openclaw/
+
+# Archives and generated output
+*.zip
+dist/
+build/

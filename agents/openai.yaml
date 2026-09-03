@@ -1,0 +1,5 @@
+﻿interface:
+  display_name: "Compass"
+  short_description: "Product Experience Intelligence for Web"
+  brand_color: "#16324F"
+  default_prompt: "Use $compass to analyze or build a Web experience around user intent and product decisions."
