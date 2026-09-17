@@ -8,7 +8,7 @@ Compass helps AI agents reason about product intent, UX architecture, attention 
 
 ## What Compass does
 
-Compass is a portable Agent Skill for product decisions across sites, SaaS, ecommerce, marketplaces, dashboards, portals, backoffice and responsive Web. It helps an agent determine:
+Compass is a portable Agent Skill for product decisions across sites, SaaS, ecommerce, marketplaces, dashboards, portals, backoffice and responsive Web. It also teaches the agent how to extract transferable principles from mature internet products—search, marketplace, knowledge, payments, collaboration and more—without copying their layouts. It helps an agent determine:
 
 - primary and secondary intent;
 - dominant object and action;

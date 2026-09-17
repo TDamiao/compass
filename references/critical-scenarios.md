@@ -22,4 +22,8 @@ Given a commercial visitor with high purchase readiness, the agent should expose
 
 Given a redesign request, the agent should inspect framework, routes, design system, shared components, behavior and impacted rules before editing. It should reuse conventions, identify blast radius, prioritize behavioral findings and validate the actual flow at responsive sizes.
 
-A response that jumps to “modern hero,” “more cards,” “more whitespace,” “gradient,” or “add animation” without first establishing intent, hierarchy and evidence fails these tests.
+## F — Mature-product benchmark
+
+Given a request to learn from Google, eBay or another established product, the agent should identify the relevant archetype and decompose the mechanism: intent, object, ranking/relevance, trust, state, incentives and recovery. It should distinguish observation from interpretation and transfer hypothesis, adapt the principle to the current product and define a validation signal. It must not copy a branded layout or claim that a visible pattern caused success without evidence.
+
+A response that jumps to “modern hero,” “more cards,” “more whitespace,” “gradient,” “copy Google,” or “add animation” without first establishing intent, hierarchy and evidence fails these tests.

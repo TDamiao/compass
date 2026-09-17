@@ -8,7 +8,7 @@ O Compass ajuda agentes de IA a raciocinar sobre intenção do produto, arquitet
 
 ## O que o Compass faz
 
-É uma Agent Skill portátil para sites, SaaS, ecommerce, marketplaces, dashboards, portais, backoffice e Web responsiva. Ajuda o agente a definir intenção primária, ação dominante, informação necessária, hierarquia de atenção, progressive disclosure, acessibilidade, performance e consistência com o design system.
+É uma Agent Skill portátil para sites, SaaS, ecommerce, marketplaces, dashboards, portais, backoffice e Web responsiva. Ajuda o agente a definir intenção primária, ação dominante, informação necessária, hierarquia de atenção, progressive disclosure, acessibilidade, performance e consistência com o design system. Também ensina a extrair princípios de produtos maduros da internet — como busca, marketplace, conhecimento, pagamentos e colaboração — sem copiar layouts.
 
 ## O que não é
 
