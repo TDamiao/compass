@@ -24,6 +24,20 @@ Use Compass to inspect this repository and improve the landing page without intr
 Use o Compass para analisar esta página e identificar a intenção primária, a ação dominante e os três maiores problemas de UX.
 ```
 
+## Interface work
+
+For visual implementation, use `compass-interface`. In Hermes:
+
+```text
+/compass-interface Corrija o overflow desta tela mantendo a marca e o sistema de componentes atual.
+```
+
+```text
+/compass /compass-interface Use as prioridades desta página de marketplace para definir e implementar hierarquia visual, CSS responsivo e estados de interação.
+```
+
+For benchmarking, ask for source, interpretation, adaptation and validation. The agent should distinguish documented behavior from an unverified explanation for a company's success. For terminal-only work, expect code-level checks plus a clear statement that rendered appearance was not verified.
+
 ## Expected behavior
 
 The agent should establish product intent before proposing components. It should inspect an existing repository before editing, preserve necessary information in dense experiences, expose a ready buyer's natural action, and use evidence-based UX findings rather than generic “modern” patterns.

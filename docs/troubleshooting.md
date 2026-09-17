@@ -6,7 +6,7 @@ Confirm the package contains a root `SKILL.md`, exact lowercase `name: compass`,
 
 ## Skill appears but does not activate
 
-Use explicit `$compass` invocation and a request that names a Web product decision, UX audit, information architecture, friction, trust, conversion or implementation review. The description intentionally excludes native mobile-app design.
+Name the skill explicitly with the runtime's supported syntax. In Hermes, use `/compass` for product/UX or `/compass-interface` for visual design/CSS. See [Hermes setup and verification](hermes.md).
 
 ## Runtime loads an old version
 
@@ -14,7 +14,7 @@ Inspect the active workspace and global roots. Remove or update the stale copy u
 
 ## References are not found
 
-The package is multi-file. Reinstall or copy the entire `compass/` folder, preserving `references/` beside `SKILL.md`. Do not install Hermes' single-file URL form for Compass.
+Each skill is multi-file. Preserve its own `references/` beside `SKILL.md`. Current Hermes documentation includes referenced files with URL installs; older versions may differ. Check the actual installed bundle, or use the sibling local-copy method in [the Hermes guide](hermes.md).
 
 ## Git installation does not update
 

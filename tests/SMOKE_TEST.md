@@ -60,3 +60,17 @@ Expected: challenge the blanket hiding strategy, distinguish information density
 ## Failure condition
 
 A result fails conceptually if it suggests cards, gradients, rounded corners, more whitespace or a modern hero before identifying intent, dominant object/action, attention hierarchy and decision-critical information.
+
+## Compass Interface scenarios
+
+Run with the companion installed. These are behavioral scenarios, not string-matching tests. The independent reasoning pass performed during development is not a Hermes runtime test. Record the runtime/model, source revision, capabilities, output and any observed failure when running them in Hermes.
+
+| Request and available evidence | Observable pass criteria |
+| --- | --- |
+| Hermes with terminal only: fix overflow at 360px in an existing CSS Modules marketplace with long titles and a shipping table | Inspect intrinsic sizing and ancestors; preserve the brand, comparison semantics and scoped styling; mark rendered validation pending |
+| Proposal only: use Google/eBay lessons for a used-parts search with price, condition, seller and shipping; no brand yet | Give a coherent visual direction with preserved decision evidence, sourced lessons, qualified hypotheses and a validation plan; no implementation |
+| Restyle a form with server errors, disabled actions and a pending payment; code available | Preserve input, connect errors to fields, distinguish pending from success and prevent duplicate submission |
+| Review a dense table shown in a screenshot only | Identify visible hierarchy issues while keeping hidden interaction, markup and contrast measurements unverified |
+| Correct a single button's wrapping in an established brand | Focus on the affected control and relevant responsive states; avoid a new design system or unrelated research |
+
+For installation verification in Hermes, confirm both names in the skill list and load `references/product-lessons.md` and `references/interaction-patterns.md` from `compass-interface`. Missing reference files are a packaging failure even when the skill's entrypoint loads.

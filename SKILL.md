@@ -58,6 +58,8 @@ Choose the mode that matches the request and read only its linked reference:
 
 ## Existing repositories
 
+When product decisions are settled and the task involves visual design or CSS implementation, use the companion `compass-interface` if installed. Pass the user/task, dominant object/action, information hierarchy, trust evidence, states and constraints. Keep this handoff compact and reuse existing context. The companion is optional; continue with the available capabilities if it is absent. In Hermes, load skills by name and relevant references through `skill_view` when available.
+
 Before modifying anything, inspect structure, relevant routes/pages, framework, shared components, global styles, tokens, responsive breakpoints, current behavior, documentation, business rules and the impacted flow. Before changing shared code, assess other pages, responsiveness, auth, SEO, analytics/events, commercial rules, accessibility and maintenance risk. Preserve existing conventions unless there is a demonstrated product reason to change them.
 
 ## Product judgment

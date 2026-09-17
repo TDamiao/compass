@@ -18,6 +18,22 @@ Não é tema visual, biblioteca de componentes, framework CSS, prompt de “deix
 
 Use `compass` para decisões de produto e UX. Use `compass-interface` quando essas decisões precisarem virar sistema visual ou implementação frontend: tokens, tipografia, layout, responsividade, estados de componentes, arquitetura CSS, acessibilidade e revisão visual. A skill complementar está em [compass-interface](compass-interface/SKILL.md).
 
+Ela inclui decisões de composição e identidade, diagnóstico prático de CSS, formulários, busca, tabelas, diálogos e estados de erro. As lições de Google, eBay, GitHub Primer e IBM Carbon têm fontes e limites de aplicação. O agente carrega as referências conforme a tarefa e informa o que conseguiu verificar.
+
+## Uso no Hermes
+
+Instale as duas skills em pastas irmãs, cada uma com seu `SKILL.md` e `references/`. O [guia do Hermes](docs/hermes.md) explica instalação, atualização e conferência. Os comandos seguem a documentação oficial; a execução no Hermes ainda precisa ser verificada nessa instalação.
+
+```text
+/compass-interface Melhore o design desta página, mantendo a marca e validando CSS, responsividade e estados.
+```
+
+Para trabalhar produto e interface juntos, em versões com suporte à combinação de comandos:
+
+```text
+/compass /compass-interface Analise as prioridades desta página e implemente uma interface coerente com elas.
+```
+
 ## Por que existe
 
 Agentes de código frequentemente começam por padrões visuais antes de entender o produto. O Compass inverte a ordem:

@@ -1,67 +1,70 @@
 # Hermes Agent
 
-Hermes skills follow the Agent Skills format and support multi-file bundles. Compass Core is compatible with Hermes. The exact single-skill repository-root install is **to be verified**: the current official examples document `owner/repo/<skill-path>`, not `owner/repo` with `SKILL.md` at repository root.
+Compass covers product/UX decisions; Compass Interface covers visual design and CSS. Install them as separate sibling skills. The repository keeps Compass at the root and its companion under `compass-interface/`.
 
-## Requirements
+## Supported workflow
 
-- Hermes Agent installed and its `hermes` command available.
-- A profile with access to the skills system.
-- The current Hermes release with the documented Skills Hub; the official skills documentation does not state a Compass-specific minimum version.
+Reviewed against the [official Hermes skills documentation](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills) on 2026-09-17. Hermes documents slash invocation, reference loading through `skill_view(name, path)`, explicit GitHub skill paths and URL installs with referenced support files. These are documented capabilities; installation and model behavior have not been executed in Hermes in this checkout.
 
-No Compass-specific dependency, credential, binary or environment variable is required.
+No Hermes-specific toolset is mandatory for discovery. Terminal/file access enables implementation; a browser enables visual verification. The skills can still review supplied content without either.
 
-## Installation
+## Install from GitHub
 
-Do not publish this as a confirmed command until it has been run against the public repository:
+For the companion's explicit directory:
 
 ```bash
-hermes skills install TDamiao/compass
+hermes skills install TDamiao/compass/compass-interface
 ```
 
-**Status: to be verified.** Hermes documents direct GitHub installs using an explicit skill directory, for example `owner/repo/skills/my-workflow`. It does not clearly document treating the repository root itself as a skill directory. Do not replace this with a guessed `owner/repo/SKILL.md` command.
-
-The documented, safe alternative for this single-skill repository is to clone the repository and copy the complete checkout into Hermes' primary skills directory:
+For Compass at the repository root, the documented URL form avoids guessing a root-directory GitHub identifier:
 
 ```bash
-git clone https://github.com/TDamiao/compass.git compass-source
-mkdir -p ~/.hermes/skills/compass
-cp -R compass-source/. ~/.hermes/skills/compass/
+hermes skills install https://raw.githubusercontent.com/TDamiao/compass/main/SKILL.md
 ```
 
-The explicit destination copy keeps the contents directly under `~/.hermes/skills/compass/` even when that directory already exists; it does not create `compass/compass-source/`. On Windows PowerShell, create the destination with `New-Item -ItemType Directory -Force ~/.hermes/skills/compass` and copy the contents with `Copy-Item -Recurse -Force compass-source\* ~/.hermes/skills/compass\`. Both forms preserve `SKILL.md`, `references/`, and the rest of the package. Do not use Hermes' direct URL form for Compass: the official docs describe that form as single-file `SKILL.md`, which would lose the references.
+These commands fetch published `main`, not unpublished local edits. Current documentation says URL installs include exact referenced support files. Verify the installed references; older Hermes releases may behave differently. The local method below also works for testing an unpublished checkout.
 
-For local development, copy the complete `compass/` directory to the official primary skills directory:
+## Local checkout method
 
-```text
-~/.hermes/skills/compass/
-```
+Use the skills directory for your active Hermes profile. The default is `~/.hermes/skills/`. From this repository, copy the following two bundles, preserving each reference tree:
 
-Alternatively, maintain a separate Hermes tap repository whose documented path contains a `compass/` skill directory, then install its documented path. That is a distribution-layout choice, not a second Compass Core; do not duplicate `SKILL.md`.
+| Source | Destination under the active skills directory |
+| --- | --- |
+| Root `SKILL.md` and root `references/` | `compass/SKILL.md` and `compass/references/` |
+| `compass-interface/SKILL.md` and `compass-interface/references/` | `compass-interface/SKILL.md` and `compass-interface/references/` |
 
-## Verify and activate
+Keep locally edited versions before replacing them. The sibling layout gives each skill a clear root; avoid copying the entire repository inside the Compass skill and then installing a second companion copy. `agents/openai.yaml` is optional for this Hermes workflow; the instructions live in each `SKILL.md`.
+
+## Verify and use
 
 ```bash
 hermes skills list
-hermes skills list --source hub
 ```
 
-Use a new session after installation if the current session does not recognize the skill. Test with:
+Confirm that both names appear. In a fresh session, use:
 
 ```text
-Audit this page using Compass. Identify the primary intent, dominant action, attention hierarchy and the three highest-priority UX problems.
+/compass-interface Melhore o design desta página seguindo a marca atual. Inspecione o CSS e valide o resultado com as ferramentas disponíveis.
 ```
 
-## Update and remove
+For a task spanning both responsibilities, recent Hermes supports leading slash commands together:
 
-For Hub/GitHub skill-directory installs, check and update from the recorded source:
-
-```bash
-hermes skills check
-hermes skills update compass
+```text
+/compass /compass-interface Reorganize esta página de produto e implemente a interface. Preserve preço, condição, vendedor e frete.
 ```
 
-For the clone/copy fallback, pull a fresh checkout and replace the complete directory manually. Remove it from `~/.hermes/skills/compass/` to uninstall. Do not use the direct URL method for this multi-file package.
+Natural-language fallback:
 
-## Troubleshooting
+```text
+Use compass para definir intenção e prioridades. Depois use compass-interface para implementar o visual, CSS e estados. Leia apenas as referências necessárias.
+```
 
-If Compass is missing, run `hermes skills list`, verify the exact `name: compass`, preserve the folder, and inspect the source path. If references are missing, reinstall the bundle rather than copying only `SKILL.md`. Conflicting copies can be resolved by removing the unintended local copy or using the source/profile that should own it.
+Ask Hermes to open `references/css-implementation.md` and `references/product-lessons.md` from `compass-interface` to confirm the bundle was preserved. Run relevant scenarios from [the smoke tests](../tests/SMOKE_TEST.md); distinguish an installed name from a successful behavioral test.
+
+## Updates and troubleshooting
+
+Hub installs track their source: use `hermes skills check`, then `hermes skills update compass` or `hermes skills update compass-interface`. For local copies, refresh each bundle from the reviewed checkout while preserving local changes.
+
+If missing or stale, inspect the active profile, installed paths and enabled state. Check for duplicate names in project, local and external skill roots. Missing references require repairing the bundle. If the skill can edit code but cannot render it, expect useful implementation plus an explicit visual-verification gap.
+
+Repository checks establish package integrity, not Hermes execution. Record the Hermes version, source revision, reference-loading result and observed response when testing in your installation.

@@ -1,11 +1,11 @@
 # Installation
 
-Compass is a multi-file Agent Skill. Install or copy the whole `compass/` directory so `references/` remains beside `SKILL.md`.
+This repository contains two multi-file skills: `compass` at the root and `compass-interface` in its own directory. Preserve each skill's `SKILL.md` and complete `references/` tree. When installing both in Hermes, use sibling skill directories as described in [the Hermes guide](hermes.md).
 
 | Runtime | Support | Recommended install |
 | --- | --- | --- |
 | Codex | Compatible | Copy to `.agents/skills/compass/` for a project or `~/.agents/skills/compass/` for a user |
-| Hermes Agent | Compatible; root Git install to be verified | Clone/copy the complete package to `~/.hermes/skills/compass/`; use a documented skill-path install only when the repository exposes one |
+| Hermes Agent | Documented multi-file support; runtime test pending | Install the companion's explicit GitHub path and Compass's raw `SKILL.md` URL, or copy two sibling bundles; see [Hermes](hermes.md) |
 | OpenClaw | Native | `openclaw skills install git:TDamiao/compass@v1.0.0` |
 
 Canonical repository: [github.com/TDamiao/compass](https://github.com/TDamiao/compass). See the runtime pages for exact scope, updates and removal.
@@ -22,4 +22,4 @@ From the package root, confirm that `SKILL.md`, `references/`, `agents/openai.ya
 skills-ref validate .
 ```
 
-The validator is optional for runtime operation; Compass has no runtime dependencies.
+Also run `python tests/validate_package.py` to check both skill names, portable reference trees and local links. These are development checks; neither skill introduces a runtime dependency.

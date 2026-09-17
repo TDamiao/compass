@@ -26,6 +26,8 @@ Compass is not a UI theme, component library, CSS framework, “make it prettier
 
 Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need to become a visual system or frontend implementation: tokens, typography, layout, responsive behavior, component states, CSS architecture, accessibility and visual review. The companion skill is stored in [compass-interface](compass-interface/SKILL.md).
 
+Its references cover visual direction, practical CSS diagnosis, interactive behavior and sourced lessons from Google, eBay, GitHub Primer and IBM Carbon. Load only the references relevant to the task. It supports existing stacks and can continue with source-level checks when a browser is unavailable.
+
 ## Quick Start
 
 Choose a runtime in [docs/installation.md](docs/installation.md). The package is intentionally a complete folder: keep `SKILL.md` and `references/` together.
@@ -36,7 +38,11 @@ For a local checkout, copy the `compass/` folder into the project skill director
 
 ### Hermes Agent
 
-Hermes' documented GitHub examples use an explicit skill path; root-repository installation is still to be verified for this single-skill layout. The safe path is to copy the complete folder into `~/.hermes/skills/compass/`. See [docs/hermes.md](docs/hermes.md).
+Install `compass` and `compass-interface` as separate sibling bundles. The [Hermes guide](docs/hermes.md) covers GitHub/URL installation, local copies, updates and reference verification. The commands are documented by Hermes; runtime execution has not been tested in this checkout.
+
+```text
+/compass-interface Improve this interface using the existing brand, real content and accessible responsive behavior.
+```
 
 ### OpenClaw
 
