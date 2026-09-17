@@ -1,0 +1,5 @@
+interface:
+  display_name: "Compass Interface"
+  short_description: "Visual design and CSS engineering for Web"
+  brand_color: "#2D5BFF"
+  default_prompt: "Use $compass-interface to turn this product brief into a responsive, accessible and maintainable interface."

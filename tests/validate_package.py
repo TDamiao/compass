@@ -19,6 +19,15 @@ REQUIRED = [
     ROOT / "references" / "product-design-framework.md",
 ]
 
+INTERFACE_ROOT = ROOT / "compass-interface"
+INTERFACE_REQUIRED = [
+    INTERFACE_ROOT / "SKILL.md",
+    INTERFACE_ROOT / "agents" / "openai.yaml",
+    INTERFACE_ROOT / "references" / "visual-system.md",
+    INTERFACE_ROOT / "references" / "css-implementation.md",
+    INTERFACE_ROOT / "references" / "visual-audit.md",
+]
+
 
 def fail(message):
     print(f"FAIL: {message}")
@@ -28,6 +37,9 @@ def fail(message):
 def main():
     legacy_slug = "-".join(("product", "experience", "owner"))
     for path in REQUIRED:
+        if not path.is_file():
+            return fail(f"missing {path.relative_to(ROOT)}")
+    for path in INTERFACE_REQUIRED:
         if not path.is_file():
             return fail(f"missing {path.relative_to(ROOT)}")
 
@@ -43,14 +55,19 @@ def main():
     if len(skill.split("\n", 500)) > 500:
         return fail("SKILL.md exceeds the recommended 500-line limit")
 
-    for path in CORE:
+    interface_core = [
+        INTERFACE_ROOT / "SKILL.md",
+        *sorted((INTERFACE_ROOT / "references").glob("*.md")),
+    ]
+    for path in [*CORE, *interface_core]:
         text = path.read_text(encoding="utf-8")
         if legacy_slug in text:
             return fail(f"legacy slug found in {path.relative_to(ROOT)}")
         if re.search(r"[A-Za-z]:\\|/Users/|/home/|/root/", text):
             return fail(f"absolute path found in {path.relative_to(ROOT)}")
         for ref in re.findall(r"\]\((references/[^)]+)\)", text):
-            if not (ROOT / ref).is_file():
+            base = path.parent.parent if path.parent.name == "references" else path.parent
+            if not (base / ref).is_file():
                 return fail(f"broken reference {ref} in {path.relative_to(ROOT)}")
 
     print("PASS: Compass package structure, Core portability and relative references are valid")

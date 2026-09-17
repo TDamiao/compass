@@ -2,7 +2,7 @@
 
 Product Experience Intelligence para agentes de IA.
 
-O Compass ajuda agentes de IA a raciocinar sobre intenção do produto, arquitetura de UX, hierarquia de atenção, fricção, confiança, conversão e decisões de interfaces Web antes de escrever código de UI.
+O Compass ajuda agentes de IA a raciocinar sobre intenção do produto, arquitetura de UX, hierarquia de atenção, fricção, confiança, conversão e decisões de interfaces Web antes de escrever código de UI. O repositório também contém a skill complementar `compass-interface`, voltada para design visual, CSS, responsividade e implementação frontend.
 
 [English](README.md)
 
@@ -13,6 +13,10 @@ O Compass ajuda agentes de IA a raciocinar sobre intenção do produto, arquitet
 ## O que não é
 
 Não é tema visual, biblioteca de componentes, framework CSS, prompt de “deixar mais bonito”, gerador de templates de landing page nem substituto de pesquisa com usuários.
+
+## Skill complementar
+
+Use `compass` para decisões de produto e UX. Use `compass-interface` quando essas decisões precisarem virar sistema visual ou implementação frontend: tokens, tipografia, layout, responsividade, estados de componentes, arquitetura CSS, acessibilidade e revisão visual. A skill complementar está em [compass-interface](compass-interface/SKILL.md).
 
 ## Por que existe
 

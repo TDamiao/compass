@@ -2,7 +2,7 @@
 
 Product Experience Intelligence for AI Agents.
 
-Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code.
+Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code. The repository also contains the companion `compass-interface` skill for visual design, CSS, responsive composition and frontend implementation.
 
 [Português (Brasil)](README.pt-BR.md)
 
@@ -21,6 +21,10 @@ Compass is a portable Agent Skill for product decisions across sites, SaaS, ecom
 ## What Compass is not
 
 Compass is not a UI theme, component library, CSS framework, “make it prettier” prompt, landing-page template generator or replacement for user research.
+
+## Companion skill
+
+Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need to become a visual system or frontend implementation: tokens, typography, layout, responsive behavior, component states, CSS architecture, accessibility and visual review. The companion skill is stored in [compass-interface](compass-interface/SKILL.md).
 
 ## Quick Start
 
