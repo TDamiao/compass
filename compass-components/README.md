@@ -20,6 +20,10 @@ The HTML/CSS/JavaScript examples are framework-neutral reference implementations
 
 Follow [the authoring guide](references/authoring.md), create a stable lowercase ID directory, complete its guide and metadata, add working reference files only when implemented, and update `registry/registry.json`. Planned patterns must not claim downloadable files. Run `python tests/validate_package.py` from the repository root.
 
-## Future catalog interface
+## CLI
 
-A future catalog can consume `registry.json` to render category indexes and per-component pages with an interactive preview, variants, anatomy, usage guidance, source, installation instructions, responsive behavior, accessibility, API and agent guidance. This repository currently has no site framework or catalog runtime, so none is introduced here.
+The experimental, unpublished v0.1 distribution tool is documented in the [Compass Components CLI guide](../cli/README.md). It installs framework-neutral reference files into a project-local `compass/<id>/` directory; it does not integrate them into an application.
+
+## Catalog
+
+The static [catalog](../catalog/README.md) consumes `registry.json` for category indexes and per-component pages with interactive previews, source, responsive behavior, accessibility and agent guidance. The registry remains its data source; catalog code is not duplicated here.
