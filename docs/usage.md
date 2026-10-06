@@ -36,6 +36,12 @@ For visual implementation, use `compass-interface`. In Hermes:
 /compass /compass-interface Use as prioridades desta página de marketplace para definir e implementar hierarquia visual, CSS responsivo e estados de interação.
 ```
 
+For a reusable component implementation, add `compass-components` after the product and interface decisions are clear:
+
+```text
+Use Compass to decide whether this workflow needs persistent navigation. Use Compass Interface for the visual direction, then Compass Components to adapt an appropriate navigation pattern to the existing router, tokens and stack.
+```
+
 For benchmarking, ask for source, interpretation, adaptation and validation. The agent should distinguish documented behavior from an unverified explanation for a company's success. For terminal-only work, expect code-level checks plus a clear statement that rendered appearance was not verified.
 
 ## Expected behavior

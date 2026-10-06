@@ -7,8 +7,11 @@
 - Enriched Compass Interface with visual direction, practical CSS diagnosis, component behavior and evidence-based verification.
 - Added sourced product lessons and explicit limits for adapting Google, eBay, Primer and Carbon patterns.
 - Added a compact product-to-interface handoff and Hermes-aware reference loading with tool-availability fallbacks.
-- Updated Hermes documentation for two sibling skills and current documented installation/invocation behavior; runtime testing remains pending.
-- Extended package validation to both skill entrypoints and their complete local reference graphs.
+- Updated Hermes documentation for three sibling skills and current documented installation/invocation behavior; runtime testing remains pending.
+- Extended package validation to all three skill entrypoints and their complete local reference graphs.
+- Added the separate Compass Components skill, registry, component authoring contract, adaptable foundations and six native HTML/CSS/JavaScript reference patterns.
+- Clarified the three-layer relationship and separate-bundle installation across project documentation.
+- Added the static Compass Components Catalog with registry-driven routes, component previews, search and source browsing.
 
 ## [1.0.0] - 2026-09-03
 

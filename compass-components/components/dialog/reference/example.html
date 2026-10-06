@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dialog reference</title><link rel="stylesheet" href="component.css"><script src="component.js" defer></script></head>
+<body>
+  <main class="demo">
+    <h1>Archive project</h1>
+    <p>Example of a focused confirmation. Replace this text with the actual consequence.</p>
+    <button class="cc-dialog__trigger" type="button" data-open-dialog>Archive project</button>
+    <p role="status" aria-live="polite" data-demo-status></p>
+    <dialog class="cc-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+      <h2 id="dialog-title">Archive this project?</h2>
+      <p id="dialog-description">Team members will no longer be able to edit this project. You can restore it from the archive.</p>
+      <div class="cc-dialog__actions"><button type="button" data-close-dialog>Cancel</button><button class="cc-dialog__confirm" type="button" data-close-dialog>Archive project</button></div>
+    </dialog>
+  </main>
+</body>
+</html>

@@ -73,4 +73,15 @@ Run with the companion installed. These are behavioral scenarios, not string-mat
 | Review a dense table shown in a screenshot only | Identify visible hierarchy issues while keeping hidden interaction, markup and contrast measurements unverified |
 | Correct a single button's wrapping in an established brand | Focus on the affected control and relevant responsive states; avoid a new design system or unrelated research |
 
-For installation verification in Hermes, confirm both names in the skill list and load `references/product-lessons.md` and `references/interaction-patterns.md` from `compass-interface`. Missing reference files are a packaging failure even when the skill's entrypoint loads.
+## Compass Components scenarios
+
+Use with `compass-components` installed. These check pattern judgment and adaptation, not exact wording.
+
+| Request and available evidence | Observable pass criteria |
+| --- | --- |
+| “Add a sidebar” to a small site with four top-level pages, existing healthy top navigation and no app workspace | First ask whether a persistent rail solves a demonstrated navigation problem; preserve the current navigation if it does not. |
+| Add a table to compare hundreds of records in an existing React product with a table primitive and semantic tokens | Reuse the existing primitive/data contract; define sorting/filter/loading/error and narrow-screen comparison behavior; do not paste the HTML reference wholesale or add a second UI library. |
+| Implement a destructive action confirmation | Check consequence and reversibility; use the existing/native dialog pattern when interruption is justified; preserve focus, keyboard dismissal and truthful pending/success behavior. |
+| Show AI progress for a long-running task | Display observable progress, activity, tools or summarized rationale; never expose private chain-of-thought; represent uncertainty, cancellation and failure honestly. |
+
+For installation verification in Hermes, confirm the names of all installed skills in the skill list and load `references/product-lessons.md` and `references/interaction-patterns.md` from `compass-interface`. For `compass-components`, open the registry and one component's README/reference files. Missing support files are a packaging failure even when the skill's entrypoint loads.

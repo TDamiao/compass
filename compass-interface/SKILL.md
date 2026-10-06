@@ -7,6 +7,8 @@ description: "Design visual, CSS, interfaces Web responsivas e acessíveis."
 
 Translate product decisions into a distinctive, coherent, accessible and maintainable Web interface. Explain the functional reason for important choices of type, color, spacing, imagery, interaction and CSS. Work in the user's language and the project's stack; React is optional.
 
+When reusable implementation guidance would help, `compass-components` is a separate optional companion. Use it after the product need and visual direction are clear; preserve the project's existing components, tokens and architecture. This skill remains responsible for visual decisions and frontend behavior, while the catalog supplies adaptable pattern guidance.
+
 ## When to use
 
 Use for visual design, styling, CSS debugging, responsive layouts, component states, design systems and visual implementation reviews. Recognize requests such as "melhore o design", "arrume o CSS", "deixe responsivo" and "crie a interface". For a review or diagnosis, inspect and recommend; implement when the user requests changes. Scale the work: a wrapping bug needs a focused fix, while a new experience needs composition and state design.

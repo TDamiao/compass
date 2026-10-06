@@ -1,0 +1,12 @@
+:root { --cc-color-canvas: #f6f7f8; --cc-color-surface: #fff; --cc-color-text: #20252b; --cc-color-muted: #5b6570; --cc-color-border: #d7dce1; --cc-color-action: #244f70; --cc-color-focus: #145da0; --cc-color-scrim: #17212b88; --cc-shadow-overlay: 0 1rem 3rem #0004; font: 1rem/1.5 system-ui, sans-serif; color: var(--cc-color-text); background: var(--cc-color-canvas); }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.demo { max-inline-size: 56rem; margin: 2rem auto; padding: 1rem; }
+.cc-dialog__trigger, .cc-dialog__actions button { min-block-size: 2.75rem; padding: .55rem .9rem; border: 1px solid var(--cc-color-border); border-radius: .4rem; background: var(--cc-color-surface); color: var(--cc-color-text); font: inherit; cursor: pointer; }
+.cc-dialog__trigger:focus-visible, .cc-dialog__actions button:focus-visible { outline: 3px solid var(--cc-color-focus); outline-offset: 2px; }
+.cc-dialog { inline-size: min(34rem, calc(100% - 2rem)); max-block-size: min(80vh, 42rem); overflow: auto; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--cc-color-border); border-radius: .75rem; background: var(--cc-color-surface); color: var(--cc-color-text); box-shadow: var(--cc-shadow-overlay); }
+.cc-dialog::backdrop { background: var(--cc-color-scrim); }
+.cc-dialog p { color: var(--cc-color-muted); }
+.cc-dialog__actions { display: flex; flex-wrap: wrap; justify-content: end; gap: .6rem; margin-block-start: 1.5rem; }
+.cc-dialog__actions .cc-dialog__confirm { border-color: var(--cc-color-action); background: var(--cc-color-action); color: #fff; }
+@media (max-width: 30rem) { .cc-dialog__actions { flex-direction: column-reverse; } .cc-dialog__actions button { inline-size: 100%; } }

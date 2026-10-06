@@ -1,0 +1,15 @@
+:root { --cc-color-surface: #fff; --cc-color-text: #20252b; --cc-color-muted: #5b6570; --cc-color-border: #697681; --cc-color-action: #244f70; --cc-color-on-action: #fff; --cc-color-focus: #145da0; --cc-color-danger: #9e3028; font: 1rem/1.5 system-ui, sans-serif; color: var(--cc-color-text); }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.demo { max-inline-size: 40rem; margin: 2rem auto; padding: 1rem; }
+.cc-form { display: grid; gap: 1.25rem; }
+.cc-field { display: grid; gap: .4rem; }
+.cc-field label { font-weight: 650; }
+.cc-field__hint { margin: 0; color: var(--cc-color-muted); font-size: .9rem; }
+.cc-field input { inline-size: 100%; min-block-size: 2.75rem; padding: .55rem .65rem; border: 1px solid var(--cc-color-border); border-radius: .35rem; color: var(--cc-color-text); font: inherit; }
+.cc-field input:focus-visible, .cc-field__submit:focus-visible { outline: 3px solid var(--cc-color-focus); outline-offset: 2px; }
+.cc-field input[aria-invalid="true"] { border-color: var(--cc-color-danger); border-width: 2px; }
+.cc-field__error { margin: 0; color: var(--cc-color-danger); font-weight: 600; }
+.cc-field__submit { justify-self: start; min-block-size: 2.75rem; padding: .55rem .9rem; border: 0; border-radius: .4rem; background: var(--cc-color-action); color: var(--cc-color-on-action); font: inherit; font-weight: 650; cursor: pointer; }
+.cc-form__result { min-block-size: 1.5em; }
+@media (max-width: 32rem) { .cc-field__submit { inline-size: 100%; } }

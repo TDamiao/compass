@@ -1,0 +1,11 @@
+{
+  "id": "field",
+  "name": "Field",
+  "category": "forms",
+  "status": "stable",
+  "description": "Connects a form control with its persistent label, constraints, help and actionable error feedback.",
+  "version": "1.0.0",
+  "implementation": "html-css-js-reference",
+  "dependencies": [],
+  "files": ["components/field/README.md", "components/field/component.json", "components/field/reference/example.html", "components/field/reference/component.css", "components/field/reference/component.js"]
+}

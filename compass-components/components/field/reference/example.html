@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Field reference</title><link rel="stylesheet" href="component.css"><script src="component.js" defer></script></head>
+<body>
+  <main class="demo">
+    <h1>Invite a teammate</h1>
+    <form class="cc-form" novalidate>
+      <div class="cc-field">
+        <label for="invite-email">Email address <span aria-hidden="true">(required)</span></label>
+        <p class="cc-field__hint" id="invite-email-hint">They'll receive an invitation to join this workspace.</p>
+        <input id="invite-email" name="email" type="email" autocomplete="email" required aria-describedby="invite-email-hint" aria-invalid="false">
+        <p class="cc-field__error" id="invite-email-error" hidden></p>
+      </div>
+      <button class="cc-field__submit" type="submit">Send invitation</button>
+      <p class="cc-form__result" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+</body>
+</html>

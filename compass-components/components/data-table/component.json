@@ -1,0 +1,11 @@
+{
+  "id": "data-table",
+  "name": "Data Table",
+  "category": "data",
+  "status": "stable",
+  "description": "Supports comparison and repeated work across records with shared fields.",
+  "version": "1.0.0",
+  "implementation": "html-css-js-reference",
+  "dependencies": [],
+  "files": ["components/data-table/README.md", "components/data-table/component.json", "components/data-table/reference/example.html", "components/data-table/reference/component.css", "components/data-table/reference/component.js"]
+}

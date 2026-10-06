@@ -1,0 +1,5 @@
+interface:
+  display_name: "Compass Components"
+  short_description: "Product-aware reusable interface patterns"
+  brand_color: "#35635B"
+  default_prompt: "Use $compass-components to evaluate and adapt a reusable interface pattern to this product and codebase."

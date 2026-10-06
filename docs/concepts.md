@@ -43,3 +43,13 @@ Density is how much information exists. Confusion is failure of hierarchy, group
 ## Every pixel pays rent
 
 If something occupies space, draws attention, requires a click, uses color, animates or adds copy, it must help the user understand, decide, trust, navigate or act.
+
+## The three decision layers
+
+Compass is organized as three complementary skills:
+
+1. **Compass — Product decisions:** what should exist, for whom, and in what order.
+2. **Compass Interface — Visual/interface decisions:** how the chosen experience communicates and behaves visually.
+3. **Compass Components — Reusable implementation patterns:** how an appropriate pattern can be implemented accessibly and adapted to a project's stack.
+
+The handoff is `Need → Pattern → Adaptation → Implementation → Validation`. A catalog entry is implementation knowledge, not evidence that a component belongs in a product. Existing healthy project components and design tokens take precedence.

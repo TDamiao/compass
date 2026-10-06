@@ -4,16 +4,16 @@ Compass uses the open Agent Skills layout and is compatible with Codex skills. `
 
 ## Install
 
-For a project-scoped install, copy the complete package to:
+For a project-scoped install, copy each desired skill folder to its own name under:
 
 ```text
-<project-root>/.agents/skills/compass/
+<project-root>/.agents/skills/<skill-name>/
 ```
 
 For a user-scoped install, copy it to:
 
 ```text
-~/.agents/skills/compass/
+~/.agents/skills/<skill-name>/
 ```
 
 The current Codex guidance also supports installing a skill from a GitHub directory through the built-in skill installer after publication. The exact command is runtime/UI dependent; use the current Codex installer flow rather than treating a Git clone as a Codex CLI command.
@@ -26,7 +26,7 @@ Start a new session or restart Codex after installing. Explicit invocation uses:
 $compass Audit this page before changing the code. Identify the primary intent, dominant action and highest-priority UX problems.
 ```
 
-If Compass is not listed, check the exact `SKILL.md` filename, valid frontmatter, trusted project, and one of the supported `.agents/skills` roots.
+For this repository, the names are `compass`, `compass-interface` and `compass-components`; each is a separate folder with its own `SKILL.md` and support files. If a skill is not listed, check the exact filename, valid frontmatter, trusted project and supported `.agents/skills` root.
 
 ## Update and remove
 

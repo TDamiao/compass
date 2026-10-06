@@ -1,6 +1,6 @@
 # OpenClaw
 
-OpenClaw treats a skill as a folder rooted by `SKILL.md` and supports the optional supporting files used by Compass. This is Native compatibility.
+OpenClaw treats each skill as a folder rooted by `SKILL.md` and supports the optional supporting files used by Compass. The Git command below installs the root `compass` skill. The companion skills live in subfolders, so install those separately from a local checkout. This is Native compatibility.
 
 ## Install from Git
 
@@ -27,6 +27,13 @@ openclaw skills install ./path/to/compass --as compass
 ```
 
 When the current directory is the root of the Compass checkout, use `openclaw skills install . --as compass`.
+
+To add either companion from that checkout, install its folder with the corresponding skill name:
+
+```bash
+openclaw skills install ./compass-interface --as compass-interface
+openclaw skills install ./compass-components --as compass-components
+```
 
 For one configured agent, target the agent workspace explicitly:
 

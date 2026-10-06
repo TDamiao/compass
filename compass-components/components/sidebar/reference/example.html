@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sidebar reference</title>
+  <link rel="stylesheet" href="component.css">
+</head>
+<body>
+  <main class="demo">
+    <nav class="cc-sidebar" aria-label="Workspace">
+      <div class="cc-sidebar__top"><strong class="cc-sidebar__brand">Northstar</strong>
+        <button class="cc-sidebar__toggle" type="button" aria-expanded="true" aria-controls="workspace-links">Collapse navigation</button>
+      </div>
+      <ul id="workspace-links" class="cc-sidebar__links">
+        <li><a href="#overview" aria-current="page"><span aria-hidden="true">◈</span><span class="cc-sidebar__label">Overview</span></a></li>
+        <li><a href="#projects"><span aria-hidden="true">▦</span><span class="cc-sidebar__label">Projects</span></a></li>
+        <li><a href="#activity"><span aria-hidden="true">◷</span><span class="cc-sidebar__label">Activity</span></a></li>
+        <li><a href="#settings"><span aria-hidden="true">⚙</span><span class="cc-sidebar__label">Settings</span></a></li>
+      </ul>
+    </nav>
+    <section class="cc-sidebar__content" id="overview"><h1>Overview</h1><p>Example workspace content. Replace destinations and current-page state with the host router.</p></section>
+  </main>
+  <script src="component.js" defer></script>
+</body>
+</html>

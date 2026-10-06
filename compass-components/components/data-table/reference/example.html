@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Data table reference</title><link rel="stylesheet" href="component.css"><script src="component.js" defer></script></head>
+<body>
+  <main class="demo">
+    <h1>Projects</h1>
+    <div class="cc-table-tools"><label for="project-query">Filter projects</label><input id="project-query" type="search" aria-describedby="project-count"><p id="project-count" role="status" aria-live="polite">3 projects</p></div>
+    <div class="cc-table-scroll" role="region" aria-label="Projects table" tabindex="0">
+      <table class="cc-table" id="projects-table">
+        <caption>Projects available to your team</caption>
+        <thead><tr><th scope="col" aria-sort="none"><button type="button" data-sort="name">Project</button></th><th scope="col" aria-sort="none"><button type="button" data-sort="owner">Owner</button></th><th scope="col" aria-sort="descending"><button type="button" data-sort="updated">Last updated</button></th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Atlas migration</th><td>Ravi Shah</td><td data-value="2026-10-04">Oct 4, 2026</td></tr>
+          <tr><th scope="row">Billing reliability</th><td>Mei Chen</td><td data-value="2026-10-01">Oct 1, 2026</td></tr>
+          <tr><th scope="row">Customer research</th><td>Jo Costa</td><td data-value="2026-09-29">Sep 29, 2026</td></tr>
+        </tbody>
+      </table>
+      <p class="cc-table-empty" hidden>No matching projects. Clear the filter to see all projects.</p>
+    </div>
+  </main>
+</body>
+</html>

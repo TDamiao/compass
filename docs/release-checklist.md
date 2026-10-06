@@ -13,6 +13,7 @@ Release candidate: `v1.0.0`
 - [ ] `VERSION` matches the release
 - [ ] `CHANGELOG.md` is updated
 - [ ] Package requires only `SKILL.md` plus optional references at runtime
+- [ ] All three skill bundles remain separate and component registry validation passes
 
 ## Git
 

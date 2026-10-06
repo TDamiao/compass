@@ -1,0 +1,11 @@
+{
+  "id": "button",
+  "name": "Button",
+  "category": "actions",
+  "status": "stable",
+  "description": "Invokes an action in the current context with clear priority and native keyboard behavior.",
+  "version": "1.0.0",
+  "implementation": "html-css-reference",
+  "dependencies": [],
+  "files": ["components/button/README.md", "components/button/component.json", "components/button/reference/example.html", "components/button/reference/component.css"]
+}

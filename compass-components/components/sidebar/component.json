@@ -1,0 +1,11 @@
+{
+  "id": "sidebar",
+  "name": "Sidebar",
+  "category": "navigation",
+  "status": "stable",
+  "description": "Persistent navigation for application sections when orientation and frequent destination changes justify a dedicated region.",
+  "version": "1.0.0",
+  "implementation": "html-css-js-reference",
+  "dependencies": [],
+  "files": ["components/sidebar/README.md", "components/sidebar/component.json", "components/sidebar/reference/example.html", "components/sidebar/reference/component.css", "components/sidebar/reference/component.js"]
+}

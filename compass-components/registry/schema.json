@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Compass Components Registry",
+  "type": "object",
+  "required": ["schemaVersion", "name", "description", "categories", "components"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "name": { "const": "compass-components" },
+    "description": { "type": "string", "minLength": 1 },
+    "categories": {
+      "type": "array",
+      "items": { "enum": ["navigation", "actions", "data", "feedback", "overlay", "forms", "ai"] },
+      "uniqueItems": true
+    },
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/component" }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "required": ["id", "name", "category", "status", "description", "version", "implementation", "dependencies", "files"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["navigation", "actions", "data", "feedback", "overlay", "forms", "ai"] },
+        "status": { "enum": ["stable", "draft", "planned"] },
+        "description": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "implementation": { "type": "string", "minLength": 1 },
+        "dependencies": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "files": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "planned" } }, "required": ["status"] }, "then": { "properties": { "implementation": { "const": "none" }, "files": { "maxItems": 0 } } }, "else": { "properties": { "implementation": { "not": { "const": "none" } }, "files": { "minItems": 1 } } } }
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+:root { --cc-color-surface: #fff; --cc-color-text: #20252b; --cc-color-border: #aab3bc; --cc-color-action: #244f70; --cc-color-on-action: #fff; --cc-color-danger: #9e3028; --cc-color-focus: #145da0; --cc-radius-control: .4rem; font: 1rem/1.5 system-ui, sans-serif; color: var(--cc-color-text); }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.demo { max-inline-size: 52rem; margin: 2rem auto; padding: 1rem; }
+.cc-button-row { display: flex; flex-wrap: wrap; gap: .75rem; }
+.cc-button { min-block-size: 2.75rem; padding: .6rem 1rem; border: 1px solid transparent; border-radius: var(--cc-radius-control); font: inherit; font-weight: 600; cursor: pointer; }
+.cc-button--primary { background: var(--cc-color-action); color: var(--cc-color-on-action); }
+.cc-button--secondary { background: var(--cc-color-surface); color: var(--cc-color-text); border-color: var(--cc-color-border); }
+.cc-button--danger { background: var(--cc-color-danger); color: #fff; }
+.cc-button:hover:not(:disabled) { filter: brightness(.92); }
+.cc-button:active:not(:disabled) { transform: translateY(1px); }
+.cc-button:focus-visible { outline: 3px solid var(--cc-color-focus); outline-offset: 2px; }
+.cc-button:disabled { cursor: not-allowed; opacity: .58; }
+@media (max-width: 32rem) { .cc-button-row { align-items: stretch; flex-direction: column; } }

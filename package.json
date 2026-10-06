@@ -1,0 +1,23 @@
+{
+  "name": "compass-components-catalog",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Static discovery catalog for the Compass Components registry.",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --config vite.config.mjs",
+    "build": "npm test && vite build --config vite.config.mjs && node scripts/generate-catalog-routes.mjs && node scripts/verify-catalog-build.mjs",
+    "preview": "vite preview --config vite.config.mjs --host 127.0.0.1",
+    "test": "python tests/validate_package.py && node --test tests/catalog.test.mjs"
+  },
+  "dependencies": {
+    "highlight.js": "^11.12.0",
+    "markdown-it": "^15.0.2"
+  },
+  "devDependencies": {
+    "vite": "^8.3.3"
+  }
+}

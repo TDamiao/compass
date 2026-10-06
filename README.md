@@ -2,7 +2,7 @@
 
 Product Experience Intelligence for AI Agents.
 
-Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code. The repository also contains the companion `compass-interface` skill for visual design, CSS, responsive composition and frontend implementation.
+Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code. The repository also includes two complementary layers: `compass-interface` for visual/interface decisions and `compass-components` for reusable, production-oriented implementation patterns.
 
 [Português (Brasil)](README.pt-BR.md)
 
@@ -20,17 +20,29 @@ Compass is a portable Agent Skill for product decisions across sites, SaaS, ecom
 
 ## What Compass is not
 
-Compass is not a UI theme, component library, CSS framework, “make it prettier” prompt, landing-page template generator or replacement for user research.
+Compass Core is not a UI theme, component library, CSS framework, “make it prettier” prompt, landing-page template generator or replacement for user research. `compass-components` is a separate companion catalog; it does not turn Core into a component library.
 
 ## Companion skill
 
-Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need to become a visual system or frontend implementation: tokens, typography, layout, responsive behavior, component states, CSS architecture, accessibility and visual review. The companion skill is stored in [compass-interface](compass-interface/SKILL.md).
+Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need visual expression and frontend behavior. Use `compass-components` after the need and interface direction are clear, to select and adapt a reusable pattern. Each layer is an independent skill bundle.
 
-Its references cover visual direction, practical CSS diagnosis, interactive behavior and sourced lessons from Google, eBay, GitHub Primer and IBM Carbon. Load only the references relevant to the task. It supports existing stacks and can continue with source-level checks when a browser is unavailable.
+```text
+Compass → Product decisions
+Compass Interface → Visual/interface decisions
+Compass Components → Reusable implementation patterns
+```
+
+The interface skill is in [compass-interface](compass-interface/SKILL.md); the component skill, catalog guidance and machine-readable registry are in [compass-components](compass-components/SKILL.md).
+
+The interface references cover visual direction, practical CSS diagnosis, interactive behavior and sourced lessons from mature products. The component catalog documents when patterns fit, states, accessibility, responsive behavior and implementation tradeoffs. Load only the references relevant to the task; existing stacks and design systems remain authoritative.
+
+## Components Catalog
+
+The separate [Compass Components Catalog](catalog/README.md) is a static web interface for browsing the registry, reading component guidance, previewing stable reference examples and inspecting their source. It consumes the `compass-components` bundle directly; the registry remains the source of truth.
 
 ## Quick Start
 
-Choose a runtime in [docs/installation.md](docs/installation.md). The package is intentionally a complete folder: keep `SKILL.md` and `references/` together.
+Choose a runtime in [docs/installation.md](docs/installation.md). Each skill is a complete folder: keep its `SKILL.md` and supporting files together.
 
 ### Codex
 
@@ -38,7 +50,7 @@ For a local checkout, copy the `compass/` folder into the project skill director
 
 ### Hermes Agent
 
-Install `compass` and `compass-interface` as separate sibling bundles. The [Hermes guide](docs/hermes.md) covers GitHub/URL installation, local copies, updates and reference verification. The commands are documented by Hermes; runtime execution has not been tested in this checkout.
+Install `compass`, `compass-interface` and, when relevant, `compass-components` as separate sibling bundles. The [Hermes guide](docs/hermes.md) covers GitHub/URL installation, local copies, updates and reference verification. The commands are documented by Hermes; runtime execution has not been tested in this checkout.
 
 ```text
 /compass-interface Improve this interface using the existing brand, real content and accessible responsive behavior.
@@ -46,7 +58,7 @@ Install `compass` and `compass-interface` as separate sibling bundles. The [Herm
 
 ### OpenClaw
 
-From the published Git ref, use `openclaw skills install git:TDamiao/compass@v1.0.0`; from the repository root, use `openclaw skills install . --as compass`. See [docs/openclaw.md](docs/openclaw.md).
+From the published Git ref, use `openclaw skills install git:TDamiao/compass@v1.0.0` for the root `compass` skill; from a checkout, use `openclaw skills install . --as compass`. The companion folders are installed separately from a checkout. See [docs/openclaw.md](docs/openclaw.md).
 
 ## How it works
 

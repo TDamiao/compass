@@ -1,0 +1,11 @@
+{
+  "id": "dialog",
+  "name": "Dialog",
+  "category": "overlay",
+  "status": "stable",
+  "description": "Keeps a focused decision or task in context when interruption and focus management are justified.",
+  "version": "1.0.0",
+  "implementation": "html-dialog-reference",
+  "dependencies": [],
+  "files": ["components/dialog/README.md", "components/dialog/component.json", "components/dialog/reference/example.html", "components/dialog/reference/component.css", "components/dialog/reference/component.js"]
+}

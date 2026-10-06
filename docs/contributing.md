@@ -8,6 +8,8 @@ Compass is a product reasoning layer for responsive Web experiences. Contributio
 - Justify new heuristics with user behavior, decision quality, trust, accessibility, performance, implementation cost or measurable product impact.
 - Do not add a rule because a pattern is fashionable or common in a reference product.
 - Keep references focused and one level deep from `SKILL.md`.
+- Keep product reasoning, visual expression and reusable implementation guidance in their respective skill bundles; do not duplicate the component catalog in Core.
+- Keep component metadata framework-independent. Label executable examples as reference implementations and document fit, limits, states and adaptation.
 - Do not add telemetry, credentials, network calls or executable dependencies to Core.
 
 ## Changes and tests

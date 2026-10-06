@@ -1,0 +1,11 @@
+{
+  "id": "empty-state",
+  "name": "Empty State",
+  "category": "feedback",
+  "status": "stable",
+  "description": "Explains why a region has no content and offers a truthful, useful next step.",
+  "version": "1.0.0",
+  "implementation": "html-css-reference",
+  "dependencies": [],
+  "files": ["components/empty-state/README.md", "components/empty-state/component.json", "components/empty-state/reference/example.html", "components/empty-state/reference/component.css"]
+}
