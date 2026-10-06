@@ -2,7 +2,7 @@
 
 The static discovery interface for the `compass-components` registry. Registry metadata, component guides, reference examples and foundations stay in the sibling bundle as the source of truth; this app loads them during the Vite build and does not maintain a second component list.
 
-## Run locally
+## Development and validation
 
 From the repository root:
 
@@ -19,16 +19,25 @@ npm run build
 npm run preview
 ```
 
-The build emits a static site to `dist/`. It writes route entry files for each registry component/category and each foundation heading. Local preview normalizes `/components/sidebar` to its directory-index route; a static host must serve directory `index.html` files (or provide its usual trailing-slash redirect). No backend is needed. Publish the contents of `dist/` as a static site.
+The build emits a static site to `dist/`. It writes route entry files for each registry component/category and each foundation heading. No backend is needed. `dist/` is generated during validation and deployment and stays out of Git.
 
-For a host that serves the site below a path such as `/compass/`, build with a matching base path:
+For GitHub Pages at `https://tdamiao.github.io/compass/`, the Actions workflow builds with the matching base path and canonical URL. For another host serving the site below a path, configure both values to match:
 
 ```powershell
 $env:CATALOG_BASE = "/compass/"
+$env:VITE_CATALOG_URL = "https://tdamiao.github.io/compass/"
 npm run build
 ```
 
-The default base is `/`, suitable for a root domain or custom domain. `VITE_CATALOG_URL` may be set to the canonical site origin/path to enable canonical URLs; it is intentionally unset until the catalog has a public URL.
+The default base is `/`, suitable for local development or a root domain. Without `VITE_CATALOG_URL`, pages do not emit canonical links.
+
+## GitHub Pages deployment
+
+`.github/workflows/catalog-pages.yml` runs on pushes to `main` and supports manual runs with `workflow_dispatch`. It installs the lockfile with `npm ci`, runs `npm test`, builds with `/compass/` and the public URL, then uploads and deploys `dist/` using GitHub's Pages Actions. No deploy secret or custom domain is required.
+
+For the first deployment, set the repository's Pages source to **GitHub Actions** in **Settings → Pages → Build and deployment → Source**. After that, successful pushes to `main` publish automatically. The expected URL is `https://tdamiao.github.io/compass/`.
+
+Every component, category and foundation has a generated directory `index.html`, so direct requests resolve on GitHub Pages without relying on a client-side SPA fallback. Navigation links include the configured base and a trailing slash; canonical URLs are generated from the public base plus the logical route.
 
 ## Source architecture
 

@@ -5,6 +5,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { buildComponentPageModel } from '../catalog/src/lib/component-page.js';
 import { createRegistryStore } from '../catalog/src/lib/registry-store.js';
+import { canonicalUrl, normalizeBasePath, routeHref } from '../catalog/src/lib/urls.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const registry = JSON.parse(await readFile(path.join(root, 'compass-components', 'registry', 'registry.json'), 'utf8'));
@@ -13,10 +14,37 @@ const store = createRegistryStore(registry);
 test('registry accessors use the source registry and derive the statistics', () => {
   assert.equal(store.loadRegistry(), registry);
   assert.equal(store.getComponents().length, registry.components.length);
-  assert.deepEqual(store.getStats(), { total: 26, stable: 6, planned: 20, draft: 0 });
-  assert.equal(store.getStableComponents().length, 6);
-  assert.equal(store.getComponentsByCategory('ai').length, 12);
+  const expectedStats = { total: registry.components.length };
+  for (const status of ['stable', 'planned', 'draft']) {
+    expectedStats[status] = registry.components.filter((component) => component.status === status).length;
+  }
+  assert.deepEqual(store.getStats(), expectedStats);
+  assert.equal(store.getStableComponents().length, expectedStats.stable);
+  for (const category of registry.categories) {
+    assert.equal(
+      store.getComponentsByCategory(category).length,
+      registry.components.filter((component) => component.category === category).length,
+    );
+  }
   assert.equal(store.getComponent('data-table').name, 'Data Table');
+});
+
+test('catalog URLs preserve a project base, route directories and public canonical paths', () => {
+  assert.equal(normalizeBasePath('/compass'), '/compass/');
+  assert.equal(normalizeBasePath('/'), '/');
+  assert.equal(routeHref('/compass/', 'components/sidebar'), '/compass/components/sidebar/');
+  assert.equal(routeHref('/compass/', ''), '/compass/');
+  assert.equal(canonicalUrl('https://tdamiao.github.io/compass/', 'components/sidebar'), 'https://tdamiao.github.io/compass/components/sidebar/');
+  assert.equal(canonicalUrl('https://tdamiao.github.io/compass/', ''), 'https://tdamiao.github.io/compass/');
+});
+
+test('catalog navigation and preview keep base-aware URLs and the isolated sandbox', async () => {
+  const source = await readFile(path.join(root, 'catalog', 'src', 'main.js'), 'utf8');
+  assert.match(source, /return routeHref\(baseUrl, route\);/);
+  assert.match(source, /canonicalUrl\(siteUrl, routePath\)/);
+  assert.match(source, /sandbox="allow-scripts"/);
+  assert.doesNotMatch(source, /sandbox="[^"]*allow-same-origin/);
+  assert.match(source, /default-src \\'none\\'/);
 });
 
 test('search covers metadata, category and component guidance', () => {

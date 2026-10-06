@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite --config vite.config.mjs",
-    "build": "npm test && vite build --config vite.config.mjs && node scripts/generate-catalog-routes.mjs && node scripts/verify-catalog-build.mjs",
+    "build": "vite build --config vite.config.mjs && node scripts/generate-catalog-routes.mjs && node scripts/verify-catalog-build.mjs",
     "preview": "vite preview --config vite.config.mjs --host 127.0.0.1",
     "test": "python tests/validate_package.py && node --test tests/catalog.test.mjs"
   },

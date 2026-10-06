@@ -2,11 +2,12 @@ import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { normalizeBasePath } from './catalog/src/lib/urls.js';
 
 const repositoryRoot = path.dirname(fileURLToPath(import.meta.url));
 const registry = JSON.parse(readFileSync(path.join(repositoryRoot, 'compass-components', 'registry', 'registry.json'), 'utf8'));
 const foundationDocument = readFileSync(path.join(repositoryRoot, 'compass-components', 'references', 'foundations.md'), 'utf8');
-const base = process.env.CATALOG_BASE || '/';
+const base = normalizeBasePath(process.env.CATALOG_BASE || '/');
 
 function slugify(value) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

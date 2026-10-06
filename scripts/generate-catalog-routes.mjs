@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { canonicalUrl } from '../catalog/src/lib/urls.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, 'dist');
@@ -43,8 +44,7 @@ const routes = [
 ];
 
 if (siteUrl) {
-  const base = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
-  const canonical = new URL('./', base).href;
+  const canonical = canonicalUrl(siteUrl);
   const home = html.replace('</head>', `    <link rel="canonical" href="${escapeAttribute(canonical)}">\n  </head>`);
   await writeFile(path.join(dist, 'index.html'), home, 'utf8');
 }
@@ -56,8 +56,7 @@ for (const route of routes) {
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttribute(route.title)}</title>`)
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${escapeAttribute(route.description)}">`);
   if (siteUrl) {
-    const base = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
-    const canonical = new URL(route.path, base).href;
+    const canonical = canonicalUrl(siteUrl, route.path);
     page = page.replace('</head>', `    <link rel="canonical" href="${escapeAttribute(canonical)}">\n  </head>`);
   }
   await writeFile(path.join(directory, 'index.html'), page, 'utf8');

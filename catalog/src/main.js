@@ -2,6 +2,7 @@ import './style.css';
 import 'highlight.js/styles/github.css';
 import { escapeHtml, highlightSource, removeDocumentTitle, renderMarkdown } from './lib/markdown.js';
 import { buildComponentPageModel } from './lib/component-page.js';
+import { canonicalUrl, routeHref } from './lib/urls.js';
 import {
   getComponent,
   getComponents,
@@ -35,7 +36,7 @@ const guidesForSearch = Object.fromEntries(
 );
 
 function href(route = '') {
-  return `${baseUrl}${route.replace(/^\//, '')}`;
+  return routeHref(baseUrl, route);
 }
 
 function parseRoute() {
@@ -331,13 +332,16 @@ function updateMetadata(route) {
 
   const siteUrl = import.meta.env.VITE_CATALOG_URL;
   let canonical = document.querySelector('link[rel="canonical"]');
-  if (siteUrl) {
+  if (siteUrl && route.type !== 'not-found') {
+    const routePath = route.type === 'component' ? `components/${route.id}`
+      : route.type === 'category' ? `categories/${route.id}`
+        : route.type === 'foundation' ? `foundations/${route.id}` : '';
     if (!canonical) {
       canonical = document.createElement('link');
       canonical.rel = 'canonical';
       document.head.append(canonical);
     }
-    canonical.href = new URL(window.location.pathname, siteUrl).href;
+    canonical.href = canonicalUrl(siteUrl, routePath);
   } else {
     canonical?.remove();
   }
