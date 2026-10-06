@@ -1,10 +1,8 @@
-# AI interaction patterns
+## What AI patterns communicate
 
-The `ai` category is reserved in the registry taxonomy. Conversation, agent status/activity, progress steps, tool calls, task progress, file diffs, artifacts, citations, approvals, permission requests and human-in-the-loop patterns are planned, not implemented components yet.
+AI patterns surface observable progress, activity, tool use, approvals and results. Give users a concise rationale; never expose private chain-of-thought, hidden prompts, credentials, internal traces or sensitive model content.
 
-Represent observable product events and user-relevant outcomes: progress, activity, steps, status, tools used, actions performed, outputs, citations, summarized rationale, approval and permission. Do not expose or encourage disclosure of private chain-of-thought, hidden prompts, credentials, internal traces or sensitive model content. A concise rationale is a user-facing explanation, not a transcript of private reasoning.
-
-For each future pattern, define what is known versus estimated, event ordering, cancellation/retry, permission boundaries, stale/partial/error states, accessible announcements and what data may be shown. Request approval at the consequential action and make scope and effects clear. Never imply a tool call or task succeeded until the product confirms it.
+Distinguish known from estimated progress, define cancellation/retry and permission boundaries, and provide accessible partial/error states. Request approval before consequential actions and report success only after the product confirms it.
 
 | Observation | Principle | Fit for Compass | Tradeoff |
 | --- | --- | --- | --- |

@@ -61,32 +61,33 @@ function statusLabel(status) {
 }
 
 function renderSidebar() {
+  const activeRoute = parseRoute();
   const categorySections = categories.map((category) => {
     const components = getComponentsByCategory(category);
     const links = components.map((component) => `
       <li>
-        <a class="sidebar-link" href="${href(`components/${component.id}`)}">
+        <a class="sidebar-link" href="${href(`components/${component.id}`)}"${activeRoute.type === 'component' && activeRoute.id === component.id ? ' aria-current="page"' : ''}>
           <span>${escapeHtml(component.name)}</span>
           ${component.status === 'stable' ? '' : `<span class="sidebar-status">${escapeHtml(statusLabel(component.status))}</span>`}
         </a>
       </li>`).join('');
     return `
       <section class="sidebar-group" aria-labelledby="nav-${escapeHtml(category)}">
-        <h2 id="nav-${escapeHtml(category)}"><a href="${href(`categories/${category}`)}">${escapeHtml(categoryLabel(category))}</a></h2>
+      <h2 id="nav-${escapeHtml(category)}"><a href="${href(`categories/${category}`)}"${activeRoute.type === 'category' && activeRoute.id === category ? ' aria-current="page"' : ''}>${escapeHtml(categoryLabel(category))}</a></h2>
         <ul>${links}</ul>
       </section>`;
   }).join('');
 
   const foundationLinks = foundations.map((foundation) => {
     const id = slugify(foundation.title);
-    return `<li><a class="sidebar-link" href="${href(`foundations/${id}`)}">${escapeHtml(foundation.title)}</a></li>`;
+    return `<li><a class="sidebar-link" href="${href(`foundations/${id}`)}"${activeRoute.type === 'foundation' && activeRoute.id === id ? ' aria-current="page"' : ''}>${escapeHtml(foundation.title)}</a></li>`;
   }).join('');
 
   return `
     <aside class="sidebar" id="catalog-nav" aria-label="Catalog navigation">
       <button class="sidebar-close" type="button" data-menu-close>Close navigation</button>
       <nav>
-        <a class="sidebar-home" href="${href()}">Catalog overview</a>
+        <a class="sidebar-home" href="${href()}"${activeRoute.type === 'home' ? ' aria-current="page"' : ''}>Catalog overview</a>
         <section class="sidebar-group" aria-labelledby="nav-foundations">
           <h2 id="nav-foundations">Foundations</h2>
           <ul>${foundationLinks}</ul>
@@ -96,7 +97,7 @@ function renderSidebar() {
       <div class="sidebar-layers" aria-label="Compass layers">
         <span>Compass <small>Product decisions</small></span>
         <span>Interface <small>Visual decisions</small></span>
-        <span aria-current="page">Components <small>Reusable patterns</small></span>
+        <span>Components <small>Reusable patterns</small></span>
       </div>
     </aside>`;
 }
@@ -117,7 +118,7 @@ function renderShell(content) {
       <div class="top-actions">
         <div class="search-wrap" role="search">
           <label class="visually-hidden" for="catalog-search">Search patterns</label>
-          <input id="catalog-search" type="search" autocomplete="off" placeholder="Search components…" aria-controls="search-results" aria-describedby="search-status">
+          <input id="catalog-search" type="search" autocomplete="off" placeholder="Search components…" aria-controls="search-results" aria-describedby="search-status" aria-expanded="false">
           <span class="search-shortcut" aria-hidden="true">/</span>
           <div class="search-results" id="search-results" hidden></div>
           <p class="visually-hidden" id="search-status" role="status" aria-live="polite"></p>
@@ -170,6 +171,12 @@ function renderHome() {
       <p class="eyebrow">Compass / Components</p>
       <h1>Reusable patterns, chosen with product judgment.</h1>
       <p class="lead">Production-oriented interface patterns with guidance on when they fit, how they behave, and how to adapt them to an existing product.</p>
+      <section class="ecosystem-layers" aria-labelledby="ecosystem-heading">
+        <h2 class="visually-hidden" id="ecosystem-heading">Compass product layers</h2>
+        <div class="ecosystem-layer"><strong>Compass</strong><span>Product decisions</span></div>
+        <div class="ecosystem-layer"><strong>Compass Interface</strong><span>Visual decisions</span></div>
+        <div class="ecosystem-layer"><strong>Compass Components</strong><span>Reusable patterns</span></div>
+      </section>
       <div class="registry-stats" aria-label="Registry summary">
         <div><strong>${stats.total}</strong><span>patterns</span></div>
         <div><strong>${stats.stable}</strong><span>stable</span></div>
@@ -184,9 +191,9 @@ function renderHome() {
         ${renderComponentList(getStableComponents())}
       </section>
       <section class="layer-note" aria-labelledby="sequence-heading">
-        <p class="eyebrow">How the layers connect</p>
+        <p class="eyebrow">Apply patterns in context</p>
         <h2 id="sequence-heading">Need → Pattern → Adaptation → Implementation → Validation</h2>
-        <p>Compass frames product decisions. Compass Interface shapes their visual expression. Compass Components helps teams adapt an appropriate reusable pattern to the project they already have.</p>
+        <p>Start with the product need, then adapt and validate a suitable pattern within the host product.</p>
       </section>
     </div>`;
 }
@@ -356,6 +363,13 @@ function mountPreview(componentId) {
   const javascript = examples['component.js'] ?? '';
   if (!html || !css) return;
 
+  const initialViewport = window.matchMedia('(max-width: 38rem)').matches ? '390px'
+    : window.matchMedia('(max-width: 52rem)').matches ? '768px' : '100%';
+  frame.style.width = initialViewport;
+  document.querySelectorAll('[data-preview-width]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.previewWidth === initialViewport));
+  });
+
   const policy = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; img-src data:; font-src data:; connect-src \'none\'; form-action \'none\'; frame-src \'none\'; object-src \'none\'; base-uri \'none\'">';
   let preview = html
     .replace(/<link\b[^>]*href=["']component\.css["'][^>]*>/i, '')
@@ -402,6 +416,7 @@ function bindSearch() {
 
   function closeResults() {
     panel.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
   }
 
   input.addEventListener('input', () => {
@@ -418,13 +433,48 @@ function bindSearch() {
       ? `<ul>${shown.map((component) => `<li><a href="${href(`components/${component.id}`)}"><span><strong>${escapeHtml(component.name)}</strong><small>${escapeHtml(categoryLabel(component.category))}</small></span>${component.status === 'stable' ? '' : `<span class="sidebar-status">${escapeHtml(statusLabel(component.status))}</span>`}</a></li>`).join('')}</ul>${results.length > shown.length ? `<p class="search-more">Showing ${shown.length} of ${results.length}; refine your search.</p>` : ''}`
       : '<p class="search-empty">No patterns match that search.</p>';
     panel.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
   });
 
   input.addEventListener('keydown', (event) => {
+    const firstResult = panel.querySelector('a[href]');
+    if (event.key === 'ArrowDown' && firstResult) {
+      event.preventDefault();
+      firstResult.focus();
+      return;
+    }
+    if (event.key === 'Enter' && firstResult) {
+      event.preventDefault();
+      firstResult.click();
+      return;
+    }
     if (event.key === 'Escape') {
       input.value = '';
       closeResults();
       status.textContent = '';
+    }
+  });
+
+  panel.addEventListener('keydown', (event) => {
+    const links = [...panel.querySelectorAll('a[href]')];
+    const index = links.indexOf(document.activeElement);
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      input.value = '';
+      status.textContent = '';
+      closeResults();
+      input.focus();
+      return;
+    }
+    if (event.key === 'ArrowDown' && index >= 0 && index < links.length - 1) {
+      event.preventDefault();
+      links[index + 1].focus();
+    } else if (event.key === 'ArrowUp' && index === 0) {
+      event.preventDefault();
+      input.focus();
+    } else if (event.key === 'ArrowUp' && index > 0) {
+      event.preventDefault();
+      links[index - 1].focus();
     }
   });
 

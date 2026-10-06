@@ -66,7 +66,9 @@ export function getFoundationSection(id) {
 }
 
 export function getFoundationIntroduction() {
-  return splitMarkdownSections(getFoundationDocument()).introduction;
+  return splitMarkdownSections(getFoundationDocument()).introduction
+    .replace(/^#\s+[^\r\n]+\r?\n+/, '')
+    .trim();
 }
 
 export function getAiCategoryIntroduction() {
