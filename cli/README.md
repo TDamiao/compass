@@ -1,6 +1,6 @@
 # Compass Components CLI
 
-The `components-compass` npm package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. Its first release, version `0.1.0`, is being prepared.
+The `components-compass` npm package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. Its first public release is `0.1.0`. This version was bootstrapped manually; GitHub Actions Trusted Publishing/OIDC is configured for subsequent CLI releases.
 
 ## Usage
 
