@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TDamiao/compass/blob/main/schemas/compass-orchestration.schema.json",
+  "title": "Compass Orchestration Contract",
+  "description": "Optional project contract shared by the Compass Core, Interface and Components skills.",
+  "type": "object",
+  "required": ["schemaVersion"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "project": { "$ref": "#/$defs/project" },
+    "product": { "$ref": "#/$defs/product" },
+    "experience": { "$ref": "#/$defs/experience" },
+    "interface": { "$ref": "#/$defs/interface" },
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/componentSelection" }
+    },
+    "decisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/decision" }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "validation": { "$ref": "#/$defs/validation" }
+  },
+  "$defs": {
+    "decisionId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9-]{2,63}$"
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "contextValue": {
+      "type": "object",
+      "required": ["value", "decisionId"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "$ref": "#/$defs/shortText" },
+        "decisionId": { "$ref": "#/$defs/decisionId" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/shortText" },
+        "type": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primaryUser": { "$ref": "#/$defs/contextValue" },
+        "primaryGoal": { "$ref": "#/$defs/contextValue" },
+        "primaryAction": { "$ref": "#/$defs/contextValue" },
+        "workflowPriorities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        },
+        "risks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        },
+        "trustRequirements": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        },
+        "successCriteria": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        }
+      }
+    },
+    "experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priorities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        },
+        "interactionModel": { "$ref": "#/$defs/contextValue" },
+        "density": { "$ref": "#/$defs/contextValue" },
+        "requiredStates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        }
+      }
+    },
+    "interface": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layout": { "$ref": "#/$defs/contextValue" },
+        "primaryRegion": { "$ref": "#/$defs/contextValue" },
+        "secondaryRegions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextValue" }
+        },
+        "responsiveStrategy": { "$ref": "#/$defs/contextValue" }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["id", "owner", "type", "decision", "status", "dependsOn"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/decisionId" },
+        "owner": { "enum": ["core", "interface", "components", "implementation", "validation"] },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,63}$"
+        },
+        "decision": { "$ref": "#/$defs/shortText" },
+        "status": { "enum": ["proposed", "accepted", "superseded", "rejected"] },
+        "rationale": { "type": "string", "maxLength": 500 },
+        "references": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "uniqueItems": true
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/decisionId" },
+          "uniqueItems": true
+        },
+        "supersedes": { "$ref": "#/$defs/decisionId" }
+      }
+    },
+    "componentSelection": {
+      "type": "object",
+      "required": ["need", "patternId", "patternStatus", "registryRef", "selection", "decisionId"],
+      "additionalProperties": false,
+      "properties": {
+        "need": { "$ref": "#/$defs/shortText" },
+        "patternId": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "patternStatus": { "enum": ["stable", "draft", "planned"] },
+        "registryRef": { "$ref": "#/$defs/shortText" },
+        "variant": { "$ref": "#/$defs/shortText" },
+        "selection": { "enum": ["use", "adapt", "defer", "unavailable"] },
+        "rationale": { "type": "string", "maxLength": 500 },
+        "decisionId": { "$ref": "#/$defs/decisionId" }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "required": ["decisionId", "type", "reason", "proposedResolution", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "decisionId": { "$ref": "#/$defs/decisionId" },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,63}$"
+        },
+        "reason": { "$ref": "#/$defs/shortText" },
+        "proposedResolution": { "$ref": "#/$defs/shortText" },
+        "status": { "enum": ["open", "resolved"] },
+        "resolution": { "$ref": "#/$defs/shortText" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "resolved" } }, "required": ["status"] },
+          "then": {
+            "properties": { "resolution": { "$ref": "#/$defs/shortText" } },
+            "required": ["resolution"]
+          },
+          "else": { "properties": { "resolution": false } }
+        }
+      ]
+    },
+    "validationResult": {
+      "enum": ["not-checked", "pass", "warning", "fail"]
+    },
+    "deviation": {
+      "type": "object",
+      "required": ["decisionId", "issue"],
+      "additionalProperties": false,
+      "properties": {
+        "decisionId": { "$ref": "#/$defs/decisionId" },
+        "issue": { "$ref": "#/$defs/shortText" },
+        "proposedResolution": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["not-run", "pass", "warning", "fail"] },
+        "productIntent": { "$ref": "#/$defs/validationResult" },
+        "interfaceHierarchy": { "$ref": "#/$defs/validationResult" },
+        "componentUsage": { "$ref": "#/$defs/validationResult" },
+        "interactionStates": { "$ref": "#/$defs/validationResult" },
+        "accessibility": { "$ref": "#/$defs/validationResult" },
+        "deviations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/deviation" }
+        }
+      }
+    }
+  }
+}

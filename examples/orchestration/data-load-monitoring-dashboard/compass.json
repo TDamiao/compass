@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "1.0.0",
+  "project": {
+    "name": "Data Load Monitoring Dashboard",
+    "type": "operations-dashboard"
+  },
+  "product": {
+    "primaryUser": {
+      "value": "Operations director",
+      "decisionId": "DEC-017"
+    },
+    "primaryGoal": {
+      "value": "Detect failed or delayed loads and decide what needs intervention.",
+      "decisionId": "DEC-002"
+    },
+    "primaryAction": {
+      "value": "Investigate the highest-risk failed or delayed load.",
+      "decisionId": "DEC-003"
+    },
+    "workflowPriorities": [
+      {
+        "value": "Compare freshness, outcome, duration and impact before diagnostics.",
+        "decisionId": "DEC-004"
+      }
+    ],
+    "risks": [
+      {
+        "value": "A stale or partial source can make a healthy-looking dashboard misleading.",
+        "decisionId": "DEC-006"
+      }
+    ],
+    "trustRequirements": [
+      {
+        "value": "Show freshness timestamp, last successful run and the definition of a delay.",
+        "decisionId": "DEC-006"
+      }
+    ],
+    "successCriteria": [
+      {
+        "value": "The operator can find the most urgent run and understand its impact without opening every row.",
+        "decisionId": "DEC-005"
+      }
+    ]
+  },
+  "experience": {
+    "priorities": [
+      {
+        "value": "Keep the recent load table primary and freshness/impact visible nearby.",
+        "decisionId": "DEC-008"
+      },
+      {
+        "value": "Show source detail only when a run is selected.",
+        "decisionId": "DEC-010"
+      }
+    ],
+    "interactionModel": {
+      "value": "Selecting a run opens its diagnostics in a side panel; recovery actions remain explicit.",
+      "decisionId": "DEC-010"
+    },
+    "density": {
+      "value": "Compact operational density with labels and status text that remain readable.",
+      "decisionId": "DEC-012"
+    },
+    "requiredStates": [
+      {
+        "value": "Loading, no runs, partial source data, stale data, failed load and recovery.",
+        "decisionId": "DEC-013"
+      }
+    ]
+  },
+  "interface": {
+    "layout": {
+      "value": "A dashboard with freshness and impact summary above the recent-load work area.",
+      "decisionId": "DEC-007"
+    },
+    "primaryRegion": {
+      "value": "Recent load table grouped by urgency, with status and impact in the first columns.",
+      "decisionId": "DEC-008"
+    },
+    "secondaryRegions": [
+      {
+        "value": "Freshness summary and delayed/failed load counts.",
+        "decisionId": "DEC-009"
+      }
+    ],
+    "responsiveStrategy": {
+      "value": "Keep status, source and freshness visible at narrow widths; move diagnostics to the selected-run view.",
+      "decisionId": "DEC-011"
+    }
+  },
+  "components": [
+    {
+      "need": "Compare recent load runs by status, freshness, duration and impact.",
+      "patternId": "data-table",
+      "patternStatus": "stable",
+      "registryRef": "v1.1.0",
+      "selection": "use",
+      "rationale": "The primary task compares shared fields across many runs.",
+      "decisionId": "DEC-014"
+    },
+    {
+      "need": "Explain when no load runs match the current range and offer a useful next step.",
+      "patternId": "empty-state",
+      "patternStatus": "stable",
+      "registryRef": "v1.1.0",
+      "selection": "use",
+      "rationale": "The registry pattern supports a truthful explanation and recovery action.",
+      "decisionId": "DEC-015"
+    },
+    {
+      "need": "Narrow a long run history by source, status and time range.",
+      "patternId": "filters",
+      "patternStatus": "planned",
+      "registryRef": "v1.1.0",
+      "selection": "defer",
+      "rationale": "The registry marks Filters as planned; do not present it as a supplied implementation.",
+      "decisionId": "DEC-016"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "owner": "core",
+      "type": "primary-user",
+      "decision": "The primary user is a data engineer investigating individual load failures.",
+      "status": "superseded",
+      "rationale": "Initial request interpretation before the audience changed.",
+      "references": ["user request: Create a dashboard for monitoring data loads."],
+      "dependsOn": []
+    },
+    {
+      "id": "DEC-002",
+      "owner": "core",
+      "type": "primary-goal",
+      "decision": "Detect failed or delayed loads and decide what needs intervention.",
+      "status": "accepted",
+      "rationale": "The dashboard is for monitoring and operational response.",
+      "references": ["user request: Create a dashboard for monitoring data loads."],
+      "dependsOn": ["DEC-001"]
+    },
+    {
+      "id": "DEC-003",
+      "owner": "core",
+      "type": "primary-action",
+      "decision": "Investigate the highest-risk failed or delayed load.",
+      "status": "accepted",
+      "rationale": "The next action follows the monitoring goal.",
+      "dependsOn": ["DEC-002"]
+    },
+    {
+      "id": "DEC-004",
+      "owner": "core",
+      "type": "workflow-priority",
+      "decision": "Compare freshness, outcome, duration and impact before diagnostics.",
+      "status": "accepted",
+      "rationale": "These fields help prioritize which run needs attention.",
+      "dependsOn": ["DEC-002", "DEC-003"]
+    },
+    {
+      "id": "DEC-005",
+      "owner": "core",
+      "type": "success-criteria",
+      "decision": "The operator can find the most urgent run and understand its impact without opening every row.",
+      "status": "accepted",
+      "rationale": "Success is a fast, informed prioritization decision.",
+      "dependsOn": ["DEC-002"]
+    },
+    {
+      "id": "DEC-006",
+      "owner": "core",
+      "type": "risk-and-trust",
+      "decision": "Show data freshness, the last successful run and the delay definition; identify stale or partial sources.",
+      "status": "accepted",
+      "rationale": "Freshness and completeness change how operators should interpret status.",
+      "dependsOn": ["DEC-002", "DEC-003"]
+    },
+    {
+      "id": "DEC-007",
+      "owner": "interface",
+      "type": "layout",
+      "decision": "Place freshness and impact summary above the recent-load work area.",
+      "status": "accepted",
+      "rationale": "The page should orient the operator before detailed investigation.",
+      "dependsOn": ["DEC-003", "DEC-004"]
+    },
+    {
+      "id": "DEC-008",
+      "owner": "interface",
+      "type": "primary-region",
+      "decision": "Make the recent-load table primary, with status and impact before diagnostic detail.",
+      "status": "accepted",
+      "rationale": "Shared fields support comparison and urgency sorting.",
+      "dependsOn": ["DEC-007", "DEC-003"]
+    },
+    {
+      "id": "DEC-009",
+      "owner": "interface",
+      "type": "secondary-region",
+      "decision": "Keep freshness summary and delayed/failed counts visible near the primary table.",
+      "status": "accepted",
+      "rationale": "These summaries establish system health without displacing the work area.",
+      "dependsOn": ["DEC-007", "DEC-004"]
+    },
+    {
+      "id": "DEC-010",
+      "owner": "interface",
+      "type": "interaction-model",
+      "decision": "Selecting a run opens diagnostics in a side panel; recovery actions stay explicit.",
+      "status": "accepted",
+      "rationale": "Investigation remains in context while details are progressive.",
+      "dependsOn": ["DEC-003", "DEC-008"]
+    },
+    {
+      "id": "DEC-011",
+      "owner": "interface",
+      "type": "responsive-strategy",
+      "decision": "At narrow widths, preserve status, source and freshness; move diagnostics to the selected-run view.",
+      "status": "accepted",
+      "rationale": "Keep comparison-critical fields available without squeezing every column.",
+      "dependsOn": ["DEC-007", "DEC-008"]
+    },
+    {
+      "id": "DEC-012",
+      "owner": "interface",
+      "type": "density",
+      "decision": "Use compact operational density while keeping labels and text status readable.",
+      "status": "accepted",
+      "rationale": "Operators compare many records but still need clear status language.",
+      "dependsOn": ["DEC-008", "DEC-009"]
+    },
+    {
+      "id": "DEC-013",
+      "owner": "interface",
+      "type": "required-states",
+      "decision": "Cover loading, no runs, partial source data, stale data, failed load and recovery states.",
+      "status": "accepted",
+      "rationale": "Monitoring trust depends on truthful system feedback.",
+      "dependsOn": ["DEC-006", "DEC-010"]
+    },
+    {
+      "id": "DEC-014",
+      "owner": "components",
+      "type": "pattern-selection",
+      "decision": "Use the stable Data Table pattern for comparing load-run records.",
+      "status": "accepted",
+      "rationale": "Its registry need matches repeated comparison across shared fields.",
+      "dependsOn": ["DEC-008"]
+    },
+    {
+      "id": "DEC-015",
+      "owner": "components",
+      "type": "pattern-selection",
+      "decision": "Use the stable Empty State pattern for a truthful no-runs result.",
+      "status": "accepted",
+      "rationale": "The registry documents an explanation and useful next step.",
+      "dependsOn": ["DEC-013"]
+    },
+    {
+      "id": "DEC-016",
+      "owner": "components",
+      "type": "pattern-selection",
+      "decision": "Defer Filters because the registry status is planned.",
+      "status": "accepted",
+      "rationale": "No supplied implementation exists to adapt as a catalog pattern.",
+      "dependsOn": ["DEC-008", "DEC-010"]
+    },
+    {
+      "id": "DEC-017",
+      "owner": "core",
+      "type": "primary-user",
+      "decision": "The primary user is an operations director prioritizing service-level risk across data loads.",
+      "status": "accepted",
+      "rationale": "The revised brief prioritizes portfolio-level intervention over debugging one run.",
+      "references": ["scenario change: primary user changes from data engineer to operations director"],
+      "dependsOn": [],
+      "supersedes": "DEC-001"
+    }
+  ],
+  "conflicts": [
+    {
+      "decisionId": "DEC-002",
+      "type": "supersession-impact",
+      "reason": "The primary user changed, while accepted goals and downstream interface/pattern decisions still depend on the data-engineer framing.",
+      "proposedResolution": "Review DEC-002 through DEC-016 with the operations director's portfolio-level workflow before implementation.",
+      "status": "open"
+    }
+  ],
+  "validation": {
+    "status": "warning",
+    "productIntent": "warning",
+    "interfaceHierarchy": "warning",
+    "componentUsage": "pass",
+    "interactionStates": "not-checked",
+    "accessibility": "not-checked",
+    "deviations": [
+      {
+        "decisionId": "DEC-008",
+        "issue": "In the narrow-layout review, summary metrics appear more prominent than the primary load table.",
+        "proposedResolution": "Reduce summary emphasis and keep status, source and freshness in the table's first visible fields."
+      }
+    ]
+  }
+}

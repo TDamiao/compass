@@ -21,6 +21,12 @@ Use `compass`, when installed and relevant, for unresolved product/UX decisions.
 
 Carry a compact handoff into implementation: user/task, dominant object/action, information priority, trust evidence, required states, existing brand/tokens and constraints. Reuse answers already in the conversation. For a localized change, the affected task and constraints are enough. Escalate a missing decision only when it would materially change the result.
 
+## Orchestration contract
+
+When `.compass/compass.json` exists, read accepted Core decisions first and use them as constraints; do not rediscover or redefine the primary user, goal, workflow or risk. Interface owns `experience` and `interface` context plus Interface decisions such as layout, hierarchy, density, information architecture, interactions, responsive behavior and visual states. Add stable decision IDs and dependencies on the Core decisions being translated. Update only these owned sections and link each current context value to an accepted decision.
+
+If a product decision conflicts with the interface needs, record the conflict and ask Core to resolve it instead of silently rewriting `product`. A new accepted Interface decision supersedes a prior one without deleting it; check and surface dependent decisions for review. Without a contract, use the existing compact conversational handoff. Do not store hidden reasoning or scratchpad; keep rationale concise and observable.
+
 ## Non-negotiable visual lens
 
 Visual design is functional communication. Typography establishes roles and reading rhythm; spacing establishes grouping; color establishes hierarchy and state; shape and elevation establish boundaries; motion establishes cause, progress or continuity. Every visual decision must help users perceive, understand, decide, act, recover or trust.

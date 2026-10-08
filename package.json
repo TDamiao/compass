@@ -11,13 +11,15 @@
     "dev": "vite --config vite.config.mjs",
     "build": "vite build --config vite.config.mjs && node scripts/generate-catalog-routes.mjs && node scripts/verify-catalog-build.mjs",
     "preview": "vite preview --config vite.config.mjs --host 127.0.0.1",
-    "test": "python tests/validate_package.py && node --test tests/catalog.test.mjs tests/cli.test.mjs tests/cli-bin.test.mjs"
+    "validate:orchestration": "node scripts/validate-orchestration.mjs",
+    "test": "python tests/validate_package.py && node --test tests/catalog.test.mjs tests/cli.test.mjs tests/cli-bin.test.mjs tests/orchestration.test.mjs"
   },
   "dependencies": {
     "highlight.js": "^11.12.0",
     "markdown-it": "^15.0.2"
   },
   "devDependencies": {
+    "ajv": "^8.20.0",
     "vite": "^8.3.3"
   }
 }
