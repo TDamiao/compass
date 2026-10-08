@@ -1,19 +1,29 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { validateContract } from './orchestration-validator.mjs';
+import { DEFAULT_REGISTRY_REF } from '../cli/src/registry.js';
+import { validateContractAgainstRegistry } from './orchestration-validator.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
-export async function validateFile(filePath) {
+export async function validateFile(filePath, {
+  registryPath = path.join(root, 'compass-components/registry/registry.json'),
+  registryRef = DEFAULT_REGISTRY_REF,
+} = {}) {
   const absolutePath = path.resolve(filePath);
   let contract;
+  let registry;
   try {
     contract = JSON.parse(await readFile(absolutePath, 'utf8'));
   } catch (error) {
     return { errors: [`cannot read contract JSON: ${error.message}`], warnings: [], affectedDecisions: [] };
   }
-  return validateContract(contract);
+  try {
+    registry = JSON.parse(await readFile(registryPath, 'utf8'));
+  } catch (error) {
+    return { errors: [`cannot read local Components registry: ${error.message}`], warnings: [], affectedDecisions: [] };
+  }
+  return validateContractAgainstRegistry(contract, registry, registryRef);
 }
 
 async function main() {
@@ -32,7 +42,7 @@ async function main() {
     return;
   }
 
-  console.log(`PASS: ${path.relative(process.cwd(), filePath)} conforms to Compass Orchestration schema 1.0.0`);
+  console.log(`PASS: ${path.relative(process.cwd(), filePath)} conforms to Compass Orchestration schema 1.0.0 and local Components registry ${DEFAULT_REGISTRY_REF}`);
   for (const warning of result.warnings) console.warn(`WARN: ${warning}`);
 }
 

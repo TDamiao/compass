@@ -104,6 +104,59 @@ export function validateContract(contract) {
   return { errors, warnings, affectedDecisions };
 }
 
+export function validateContractAgainstRegistry(contract, registry, registryRef) {
+  const result = validateContract(contract);
+  if (result.errors.length) return result;
+
+  if (typeof registryRef !== 'string' || !registryRef.trim()) {
+    result.errors.push('registryRef is required when validating against a registry');
+    return result;
+  }
+  if (!isRecord(registry) || registry.name !== 'compass-components' || !Array.isArray(registry.components)) {
+    result.errors.push('validated registry must be a Compass Components registry with a components array');
+    return result;
+  }
+
+  const registryById = new Map();
+  for (const [index, pattern] of registry.components.entries()) {
+    if (!isRecord(pattern) || typeof pattern.id !== 'string' || !pattern.id.trim()) {
+      result.errors.push(`validated registry component at index ${index} has no valid id`);
+      continue;
+    }
+    if (!['stable', 'draft', 'planned'].includes(pattern.status)) {
+      result.errors.push(`validated registry pattern ${pattern.id} has invalid status ${pattern.status}`);
+      continue;
+    }
+    if (registryById.has(pattern.id)) {
+      result.errors.push(`validated registry contains duplicate pattern ${pattern.id}`);
+      continue;
+    }
+    registryById.set(pattern.id, pattern);
+  }
+
+  if (result.errors.length) return result;
+
+  for (const [index, selection] of (contract.components ?? []).entries()) {
+    const path = `/components/${index}`;
+    const pattern = registryById.get(selection.patternId);
+    if (!pattern) {
+      result.errors.push(`${path} references unknown registry pattern ${selection.patternId}`);
+      continue;
+    }
+    if (selection.registryRef !== registryRef) {
+      result.errors.push(`${path} registryRef ${selection.registryRef} does not match validated registry ref ${registryRef}`);
+    }
+    if (selection.patternStatus !== pattern.status) {
+      result.errors.push(`${path} status ${selection.patternStatus} does not match registry status ${pattern.status} for ${selection.patternId}`);
+    }
+    if (pattern.status === 'planned' && ['use', 'adapt'].includes(selection.selection)) {
+      result.errors.push(`${path} cannot use or adapt planned registry pattern ${selection.patternId}`);
+    }
+  }
+
+  return result;
+}
+
 function validateContextReferences(contract, byId, errors) {
   for (const [section, expectedOwner] of Object.entries(contextOwners)) {
     visitContextValues(contract[section], (contextValue, path) => {
@@ -173,4 +226,8 @@ function findAcceptedDescendants(decisions, byId, dependents) {
     }
   }
   return impacts;
+}
+
+function isRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }

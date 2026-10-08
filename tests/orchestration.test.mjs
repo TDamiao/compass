@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { validateContract } from '../scripts/orchestration-validator.mjs';
+import { DEFAULT_REGISTRY_REF } from '../cli/src/registry.js';
+import { validateContract, validateContractAgainstRegistry } from '../scripts/orchestration-validator.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixturePath = path.join(root, 'examples/orchestration/data-load-monitoring-dashboard/compass.json');
@@ -24,7 +25,7 @@ test('minimal contract is valid for incremental adoption', () => {
 });
 
 test('complete dashboard contract validates against the current registry', () => {
-  const result = validateContract(contract);
+  const result = validateContractAgainstRegistry(contract, registry, DEFAULT_REGISTRY_REF);
   assert.deepEqual(result.errors, []);
   assert.deepEqual(result.affectedDecisions, [{
     supersededDecision: 'DEC-001',
@@ -38,8 +39,47 @@ test('complete dashboard contract validates against the current registry', () =>
   for (const selection of contract.components) {
     const registered = registryById.get(selection.patternId);
     assert.ok(registered, `missing registry pattern ${selection.patternId}`);
-    assert.equal(registered.status, selection.patternStatus, `${selection.patternId} status drifted from v1.1.0`);
+    assert.equal(registered.status, selection.patternStatus, `${selection.patternId} status drifted from ${DEFAULT_REGISTRY_REF}`);
   }
+});
+
+test('registry validation rejects a pattern ID absent from the registry', () => {
+  const candidate = cloneFixture();
+  candidate.components[0].patternId = 'nonexistent-pattern';
+  const result = validateContractAgainstRegistry(candidate, registry, DEFAULT_REGISTRY_REF);
+  assert.ok(result.errors.includes('/components/0 references unknown registry pattern nonexistent-pattern'));
+});
+
+test('registry validation rejects a falsified status and enforces the real planned status', () => {
+  const candidate = cloneFixture();
+  const filters = candidate.components.find(({ patternId }) => patternId === 'filters');
+  filters.patternStatus = 'stable';
+  filters.selection = 'use';
+
+  const result = validateContractAgainstRegistry(candidate, registry, DEFAULT_REGISTRY_REF);
+  assert.ok(result.errors.includes('/components/2 status stable does not match registry status planned for filters'));
+  assert.ok(result.errors.includes('/components/2 cannot use or adapt planned registry pattern filters'));
+});
+
+test('filters remains valid as planned and deferred; stable patterns remain usable', () => {
+  const result = validateContractAgainstRegistry(contract, registry, DEFAULT_REGISTRY_REF);
+  assert.deepEqual(result.errors, []);
+  assert.equal(contract.components.find(({ patternId }) => patternId === 'filters').patternStatus, 'planned');
+  assert.equal(contract.components.find(({ patternId }) => patternId === 'filters').selection, 'defer');
+  assert.equal(contract.components.find(({ patternId }) => patternId === 'data-table').patternStatus, 'stable');
+  assert.equal(contract.components.find(({ patternId }) => patternId === 'empty-state').patternStatus, 'stable');
+});
+
+test('registry validation rejects a contract ref different from the validated local ref', () => {
+  const candidate = cloneFixture();
+  candidate.components[0].registryRef = 'v9.9.9';
+  const result = validateContractAgainstRegistry(candidate, registry, DEFAULT_REGISTRY_REF);
+  assert.ok(result.errors.includes(`/components/0 registryRef v9.9.9 does not match validated registry ref ${DEFAULT_REGISTRY_REF}`));
+});
+
+test('registry validation requires an explicit ref and a valid registry object', () => {
+  assert.match(validateContractAgainstRegistry(contract, registry).errors.join('\n'), /registryRef is required/);
+  assert.match(validateContractAgainstRegistry(contract, { name: 'other', components: [] }, DEFAULT_REGISTRY_REF).errors.join('\n'), /must be a Compass Components registry/);
 });
 
 test('schema rejects an invalid decision owner', () => {

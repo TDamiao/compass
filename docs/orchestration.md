@@ -25,7 +25,7 @@ npm run validate:orchestration
 node scripts/validate-orchestration.mjs path/to/.compass/compass.json
 ```
 
-The validator checks the JSON Schema and cross-references. It detects duplicate IDs, missing dependencies, cycles, invalid supersession, wrong ownership references, unusable `planned` selections and missing conflict/deviation references. It reports accepted descendants of superseded decisions as potentially affected; it does not rewrite decisions or decide whether they remain valid.
+The JSON Schema validates contract shape; the semantic validator checks decision relationships, ownership references, IDs, cycles and supersession. When run with the repository's local Components registry, it also verifies that each selected pattern exists, its status matches the registry, planned patterns are not marked for use/adaptation, and each selection's `registryRef` matches the ref being validated. The local ref is the canonical `DEFAULT_REGISTRY_REF` in `cli/src/registry.js`; no network lookup is performed. Compass Components' registry remains the source of truth for pattern IDs and status. The validator reports accepted descendants of superseded decisions as potentially affected; it does not rewrite decisions or decide whether they remain valid.
 
 ## Ownership
 
