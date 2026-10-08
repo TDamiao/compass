@@ -6,9 +6,9 @@ The CLI supports registry schema `1.0.0` and defaults to the immutable `v1.1.0` 
 
 ## Current release state
 
-`components-compass@0.1.0` is the first public CLI release. It was bootstrapped manually; do not publish this version again. GitHub Actions Trusted Publishing/OIDC is configured for subsequent CLI releases, using the `publish.yml` workflow and the `npm-publish` environment. The environment requires review by `TDamiao`.
+`components-compass@0.1.0` was the first public CLI release and was bootstrapped manually. `components-compass@0.1.1` is the current `latest` release and was published by the `publish.yml` workflow through npm Trusted Publishing/OIDC with provenance. The `npm-publish` environment requires review by `TDamiao`.
 
-The repository variable `NPM_PUBLISH_ENABLED` is intentionally absent while no new CLI release is approved. There is no permanent npm token in the repository. The first future OIDC validation must happen as part of a real new CLI release; do not republish `0.1.0` just to test OIDC.
+The repository variable `NPM_PUBLISH_ENABLED` is set to `false` after the release and should remain disabled until another CLI release is approved. There is no permanent npm token in the repository. The first end-to-end OIDC validation succeeded with `0.1.1`; do not republish either existing version.
 
 ## Future CLI release
 
@@ -22,6 +22,6 @@ The repository variable `NPM_PUBLISH_ENABLED` is intentionally absent while no n
 8. Verify the public npm version, `latest` dist-tag and `compass` bin. Smoke test `--version`, `--help`, `list`, `info sidebar` and `add sidebar` outside the repository. Confirm `compass-source.json` records the CLI version and registry ref.
 9. After the release is verified, set `NPM_PUBLISH_ENABLED=false` until another release is approved. Record the release in documentation only after npm confirms it.
 
-For `components-compass@0.1.0`, the bootstrap publication is already complete; do not dispatch the publish workflow or run another publish for that version. A future version such as `0.1.1` should be created only when a real change justifies it.
+The releases `0.1.0` and `0.1.1` are already published; do not dispatch the publish workflow for either version. Create a future version only when a real change justifies it.
 
 Never publish or deprecate the earlier scoped package as part of CLI releases. Never store a permanent npm token in this repository.

@@ -10,7 +10,7 @@ This repository contains three independent skill bundles: `compass` at the root,
 
 The OpenClaw Git command installs the root `compass` skill. Install `compass-interface` and `compass-components` separately from their folders in a local checkout; see [OpenClaw](openclaw.md).
 
-`compass-components` contains a registry and framework-neutral guidance plus dependency-free HTML/CSS/JavaScript reference examples. Its separate public CLI package, `components-compass@0.1.0`, exposes the `compass` command. See [the CLI guide](../cli/README.md) for usage and release status. Registry entries describe both available and planned patterns.
+`compass-components` contains a registry and framework-neutral guidance plus dependency-free HTML/CSS/JavaScript reference examples. Its separate public CLI package, `components-compass@0.1.1`, exposes the `compass` command. See [the CLI guide](../cli/README.md) for usage and release status. Registry entries describe both available and planned patterns.
 
 The public-facing Components Catalog is a separate static app in [`catalog/`](../catalog/README.md). Run `npm install` and `npm run dev` from the repository root to work on it; its build output is `dist/`.
 
