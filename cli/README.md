@@ -1,18 +1,25 @@
 # Compass Components CLI
 
-The `@tdamiao/compass-components` package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. The first npm release, version `0.1.0`, is being prepared.
+The `components-compass` npm package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. Its first release, version `0.1.0`, is being prepared.
 
 ## Usage
 
 Run a command without a global install:
 
 ```sh
-npx @tdamiao/compass-components list
-npx @tdamiao/compass-components info sidebar
-npx @tdamiao/compass-components add sidebar
+npx --yes --package=components-compass -- compass list
+npx --yes --package=components-compass -- compass info sidebar
+npx --yes --package=components-compass -- compass add sidebar
 ```
 
-After a global or project-local installation, invoke the binary directly:
+For a project-local installation:
+
+```sh
+npm install --save-dev components-compass
+npx compass list
+```
+
+After a global installation, invoke the binary directly:
 
 ```sh
 compass list
@@ -23,7 +30,7 @@ compass add sidebar
 Or install globally and use the `compass` command:
 
 ```sh
-npm install -g @tdamiao/compass-components
+npm install -g components-compass
 compass list
 ```
 

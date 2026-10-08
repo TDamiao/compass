@@ -187,6 +187,33 @@ def validate_registry():
     return None
 
 
+def validate_cli_package():
+    package_path = ROOT / "cli" / "package.json"
+    try:
+        package = json.loads(package_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return f"invalid CLI package.json: {error}"
+
+    if package.get("name") != "components-compass" or package.get("version") != "0.1.0":
+        return "CLI package identity must be components-compass@0.1.0"
+    if package.get("type") != "module":
+        return "CLI package must preserve ESM mode"
+    engines = package.get("engines", {}).get("node", "")
+    if engines != "^20.19.0 || >=22.12.0":
+        return "CLI package Node.js engine range changed unexpectedly"
+    bin_path = package.get("bin", {}).get("compass")
+    if bin_path not in {"bin/compass.js", "./bin/compass.js"}:
+        return "CLI package must map the compass executable to bin/compass.js"
+    if "bin/compass.js" not in package.get("files", []):
+        return "CLI package files list must include bin/compass.js"
+    entrypoint = ROOT / "cli" / "bin" / "compass.js"
+    if not entrypoint.is_file() or not entrypoint.read_text(encoding="utf-8").startswith("#!/usr/bin/env node"):
+        return "CLI package executable must exist and start with the Node.js shebang"
+    if package.get("dependencies"):
+        return "CLI package must remain free of runtime dependencies"
+    return None
+
+
 def validate_repository_links():
     markdown_files = ROOT.rglob("*.md")
     for source in markdown_files:
@@ -213,7 +240,7 @@ def main():
         error = validate_skill(skill_root, expected_name)
         if error:
             return fail(error)
-    for validator in (validate_registry, validate_repository_links):
+    for validator in (validate_registry, validate_cli_package, validate_repository_links):
         error = validator()
         if error:
             return fail(error)

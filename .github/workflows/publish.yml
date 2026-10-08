@@ -9,47 +9,111 @@ permissions:
   contents: read
 
 jobs:
-  publish:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'cli-v')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    environment: npm-publish
-    defaults:
-      run:
-        working-directory: cli
+  validate:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'cli-v'))
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install repository dependencies
         run: npm ci
-      - name: Test
+      - name: Run repository tests
         run: npm test
-      - name: Build
+      - name: Build catalog
         run: npm run build
-      - name: Validate package
-        run: python ../tests/validate_package.py
-      - name: Check published version
-        id: version
+      - name: Validate repository and CLI package
+        run: python tests/validate_package.py
+      - name: Inspect CLI tarball
+        run: npm pack ./cli --dry-run
+      - name: Install and invoke packed CLI externally
+        run: node scripts/test-cli-package.mjs
+
+  publish:
+    needs: validate
+    if: vars.NPM_PUBLISH_ENABLED == 'true' && ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') || (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'cli-v')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - name: Ensure npm supports Trusted Publishing
+        run: |
+          npm install --global npm@latest
+          node --version
+          npm --version
+          node -e "const [major, minor, patch] = process.versions.node.split('.').map(Number); if (major < 22 || (major === 22 && minor < 14)) process.exit(1)"
+          node -e "const [major, minor, patch] = require('child_process').execFileSync('npm', ['--version'], {encoding:'utf8'}).trim().split('.').map(Number); if (major < 11 || (major === 11 && minor < 5) || (major === 11 && minor === 5 && patch < 1)) process.exit(1)"
+      - name: Validate package identity and CLI release tag
         shell: bash
         run: |
-          PACKAGE=$(node -p "require('./package.json').name")
-          VERSION=$(node -p "require('./package.json').version")
-          echo "package=$PACKAGE" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          if [[ "$GITHUB_EVENT_NAME" == "release" && "$GITHUB_REF_NAME" != "cli-v$VERSION" ]]; then
-            echo "::error::Release tag must match cli-v$VERSION"
+          set -euo pipefail
+          PACKAGE=$(node -p "require('./cli/package.json').name")
+          VERSION=$(node -p "require('./cli/package.json').version")
+          if [[ "$PACKAGE" != "components-compass" ]]; then
+            echo "::error::Unexpected CLI package name"
             exit 1
           fi
-          if npm view "$PACKAGE@$VERSION" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
-            echo "::error::Version already published: $PACKAGE@$VERSION"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::CLI version must be a stable SemVer version"
             exit 1
           fi
-      - name: Pack dry run
+          EXPECTED_TAG="cli-v$VERSION"
+          if [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
+            if [[ "$GITHUB_REF_NAME" != "$EXPECTED_TAG" ]]; then
+              echo "::error::Release tag must match package version ($EXPECTED_TAG)"
+              exit 1
+            fi
+          else
+            if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+              echo "::error::Manual publishing is allowed only from main"
+              exit 1
+            fi
+            if ! git rev-parse --quiet --verify "refs/tags/$EXPECTED_TAG^{commit}" >/dev/null; then
+              echo "::error::Matching CLI release tag not found: $EXPECTED_TAG"
+              exit 1
+            fi
+          fi
+          TAG_PACKAGE=$(git show "$EXPECTED_TAG:cli/package.json" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(JSON.parse(s).name))")
+          TAG_VERSION=$(git show "$EXPECTED_TAG:cli/package.json" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(JSON.parse(s).version))")
+          if [[ "$TAG_PACKAGE" != "$PACKAGE" || "$TAG_VERSION" != "$VERSION" ]]; then
+            echo "::error::CLI tag package name/version does not match the workflow checkout"
+            exit 1
+          fi
+          echo "Publishing $PACKAGE@$VERSION from $EXPECTED_TAG after protected environment approval"
+      - name: Refuse an existing or unverifiable npm version
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACKAGE=$(node -p "require('./cli/package.json').name")
+          VERSION=$(node -p "require('./cli/package.json').version")
+          if OUTPUT=$(npm view "$PACKAGE@$VERSION" version --json --registry=https://registry.npmjs.org 2>&1); then
+            echo "::error::Version already exists: $PACKAGE@$VERSION"
+            exit 1
+          fi
+          if [[ "$OUTPUT" != *"E404"* || "$OUTPUT" != *"404 Not Found"* ]]; then
+            echo "::error::Could not verify whether $PACKAGE@$VERSION is absent from npm"
+            exit 1
+          fi
+      - name: Inspect CLI package before publishing
+        working-directory: cli
         run: npm pack --dry-run
       - name: Publish with npm Trusted Publishing (OIDC)
+        working-directory: cli
         run: npm publish --access public --provenance

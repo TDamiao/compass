@@ -119,7 +119,7 @@ test('add installs every registered Sidebar reference file and provenance', asyn
     registryRef: 'test-ref',
     component: 'sidebar',
     componentVersion: '1.0.0',
-    installedBy: '@tdamiao/compass-components',
+    installedBy: 'components-compass',
     cliVersion: JSON.parse(await readFile(path.join(root, 'cli', 'package.json'), 'utf8')).version,
   });
 });
