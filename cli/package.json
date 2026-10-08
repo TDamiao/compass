@@ -1,5 +1,5 @@
 {
-  "name": "@tdamiao/compass-components",
+  "name": "components-compass",
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "url": "https://github.com/TDamiao/compass/issues"
   },
   "bin": {
-    "compass": "./bin/compass.js"
+    "compass": "bin/compass.js"
   },
   "files": [
     "bin/compass.js",

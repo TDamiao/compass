@@ -39,6 +39,8 @@ try {
   const pack = await run(process.execPath, [npmCli, 'pack', './cli', '--json', '--pack-destination', temporaryRoot], { cwd: root, env: npmEnvironment });
   assert.equal(pack.status, 0, pack.stderr || pack.stdout);
   const packed = JSON.parse(pack.stdout)[0];
+  assert.equal(packed.name, 'components-compass');
+  assert.equal(packed.version, '0.1.0');
   const tarball = path.join(temporaryRoot, packed.filename);
   const contents = packed.files.map(({ path: file }) => file).sort();
   const expected = [
@@ -51,6 +53,13 @@ try {
   await mkdir(project);
   const install = await run(process.execPath, [npmCli, 'install', tarball, '--no-audit', '--no-fund', '--offline'], { cwd: project, env: npmEnvironment });
   assert.equal(install.status, 0, install.stderr || install.stdout);
+  const installedManifest = JSON.parse(await readFile(path.join(project, 'node_modules', 'components-compass', 'package.json'), 'utf8'));
+  assert.deepEqual(installedManifest.bin, { compass: 'bin/compass.js' }, 'installed package must retain its normalized compass executable mapping');
+  const executableDir = path.join(project, 'node_modules', '.bin');
+  assert.ok(['compass', 'compass.cmd', 'compass.ps1'].some((name) => existsSync(path.join(executableDir, name))), 'npm must install the compass executable shim');
+  const ephemeral = await run(process.execPath, [npmCli, 'exec', '--yes', '--offline', `--package=${tarball}`, '--', 'compass', '--version'], { cwd: project, env: npmEnvironment });
+  assert.equal(ephemeral.status, 0, ephemeral.stderr || ephemeral.stdout);
+  assert.equal(ephemeral.stdout.trim(), '0.1.0', 'npx package mode must execute the compass binary from the tarball');
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}/compass-components`;
   const env = {
@@ -92,7 +101,7 @@ try {
     registryRef: 'v1.1.0',
     component: 'sidebar',
     componentVersion: '1.0.0',
-    installedBy: '@tdamiao/compass-components',
+    installedBy: 'components-compass',
     cliVersion: packed.version,
   });
   console.log(`PASS: packed CLI ${packed.version}, ${contents.length} files, ${packed.size} bytes; installed and invoked through npx in ${project}`);

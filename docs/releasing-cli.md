@@ -1,19 +1,27 @@
 # Compass CLI release procedure
 
-The ecosystem release Compass `1.1.0` is available at tag `v1.1.0`. The CLI package is `@tdamiao/compass-components@0.1.0`, and its first npm publication is being prepared. The CLI follows its own SemVer lifecycle, while each component keeps its version in registry metadata.
+Compass `1.1.0` is available at the immutable tag `v1.1.0`. The CLI is a separate npm package, `components-compass`, with the executable `compass`; its version has an independent SemVer track. CLI tags use `cli-vX.Y.Z` and must never move or retag the Compass ecosystem release.
 
-The CLI supports registry schema `1.0.0` and defaults to the immutable `v1.1.0` ref in `cli/src/registry.js`. Registry and component URLs are derived centrally from that ref. The first npm publication remains gated on local validation, external tarball smoke tests, npm scope authorization and the Ubuntu/macOS/Windows matrix.
+The CLI supports registry schema `1.0.0` and defaults to the immutable `v1.1.0` ref in `cli/src/registry.js`. Registry and component URLs are derived centrally from that ref.
 
-## First npm publication
+## Current release state
 
-1. Confirm `v1.1.0` exists and contains the registry, schema and all registered component files.
-2. Keep the CLI default ref pinned to `v1.1.0`; do not alter the ecosystem release tag.
-3. Validate with `npm ci`, `npm test`, `npm run build`, and `python tests/validate_package.py`.
-4. Wait for `Test Compass CLI package` to pass on Ubuntu, Windows and macOS.
-5. Recheck that `@tdamiao/compass-components@0.1.0` is available and confirm the publishing account can publish under `@tdamiao`.
-6. Remove the exact `"private": true` property from `cli/package.json` only after the registry is pinned and tests pass.
-7. Run `npm pack ./cli`, inspect archive contents and size, then install the tarball in a clean external project and run the packed-package smoke test.
-8. Publish once with `npm publish --access public` from `cli/`.
-9. Verify npm reports version `0.1.0`, then use `npx @tdamiao/compass-components --version` and run `list` against the pinned registry.
+`components-compass@0.1.0` is the first public CLI release. It was bootstrapped manually; do not publish this version again. GitHub Actions Trusted Publishing/OIDC is configured for subsequent CLI releases, using the `publish.yml` workflow and the `npm-publish` environment. The environment requires review by `TDamiao`.
 
-Do not create a package reservation or publish during ecosystem release preparation. An npm `E404` lookup does not establish scope ownership or account permissions; confirm both immediately before publication. Record the actual npm publication only after `npm publish` succeeds and the package is visible at version `0.1.0`.
+The repository variable `NPM_PUBLISH_ENABLED` is intentionally absent while no new CLI release is approved. There is no permanent npm token in the repository. The first future OIDC validation must happen as part of a real new CLI release; do not republish `0.1.0` just to test OIDC.
+
+## Future CLI release
+
+1. Make a real CLI change and update `cli/package.json` to the new SemVer version. Do not change the Compass `VERSION` or the `v1.1.0` tag unless making a separate Compass ecosystem release.
+2. Keep the CLI default registry ref pinned to `v1.1.0` unless a documented CLI change intentionally supports another immutable registry release.
+3. Run `npm ci`, `npm test`, `npm run build`, `python tests/validate_package.py`, and `node scripts/test-cli-package.mjs` from the repository root. Confirm the Ubuntu, macOS and Windows package matrix passes.
+4. Confirm the new package version is not already present on npm. Treat registry errors other than a clear missing version as a blocker.
+5. Create and push an annotated `cli-vX.Y.Z` tag at the commit whose `cli/package.json` name and version match that tag. The publish workflow validates this correspondence.
+6. For an approved release only, set `NPM_PUBLISH_ENABLED=true` and dispatch `publish.yml` from `main` after the matching tag exists, or publish a GitHub release for that `cli-vX.Y.Z` tag. The workflow runs validation before the publish job and fails closed for an existing or unverifiable npm version.
+7. The publish job uses Node.js 24, the `npm-publish` environment, and npm Trusted Publishing/OIDC for direct `npm publish`. Approve the pending environment deployment as `TDamiao` when GitHub requests it. Do not add npm tokens or OTPs to repository configuration.
+8. Verify the public npm version, `latest` dist-tag and `compass` bin. Smoke test `--version`, `--help`, `list`, `info sidebar` and `add sidebar` outside the repository. Confirm `compass-source.json` records the CLI version and registry ref.
+9. After the release is verified, set `NPM_PUBLISH_ENABLED=false` until another release is approved. Record the release in documentation only after npm confirms it.
+
+For `components-compass@0.1.0`, the bootstrap publication is already complete; do not dispatch the publish workflow or run another publish for that version. A future version such as `0.1.1` should be created only when a real change justifies it.
+
+Never publish or deprecate the earlier scoped package as part of CLI releases. Never store a permanent npm token in this repository.
