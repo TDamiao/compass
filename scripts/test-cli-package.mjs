@@ -89,7 +89,7 @@ try {
   const provenance = JSON.parse(await readFile(path.join(installedRoot, 'compass-source.json'), 'utf8'));
   assert.deepEqual(provenance, {
     source: 'TDamiao/compass',
-    registryRef: 'main',
+    registryRef: 'v1.1.0',
     component: 'sidebar',
     componentVersion: '1.0.0',
     installedBy: '@tdamiao/compass-components',
