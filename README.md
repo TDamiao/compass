@@ -2,7 +2,7 @@
 
 Product Experience Intelligence for AI Agents.
 
-Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code. The repository also includes two complementary layers: `compass-interface` for visual/interface decisions and `compass-components` for reusable, production-oriented implementation patterns.
+Compass helps AI agents reason about product intent, UX architecture, attention hierarchy, friction, trust, conversion and Web interface decisions before they write UI code. The repository also includes `compass-interface` for visual/interface decisions and `compass-components` for reusable, production-oriented implementation patterns.
 
 [Português (Brasil)](README.pt-BR.md)
 
@@ -24,17 +24,22 @@ Compass Core is not a UI theme, component library, CSS framework, “make it pre
 
 ## Companion skill
 
-Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need visual expression and frontend behavior. Use `compass-components` after the need and interface direction are clear, to select and adapt a reusable pattern. Each layer is an independent skill bundle.
+Use `compass` for product and UX decisions. Use `compass-interface` when those decisions need visual expression and frontend behavior. Use `compass-components` after the need and interface direction are clear, to select and adapt a reusable pattern. The three skill bundles remain independent.
 
 ```text
-Compass → Product decisions
-Compass Interface → Visual/interface decisions
-Compass Components → Reusable implementation patterns
+Compass skills
+├─ Core → Product decisions
+├─ Interface → Visual and interaction decisions
+└─ Components → Reusable implementation patterns
+
+Shared protocol: Orchestration → persistent decisions and handoffs across these skills
 ```
+
+Orchestration is a shared protocol across the existing skills, not a fourth skill or agent. For substantial multi-stage work, the optional `.compass/compass.json` contract preserves decisions, owners, dependencies, pattern selections, conflicts and validation. See [Compass Orchestration](docs/orchestration.md).
 
 The interface skill is in [compass-interface](compass-interface/SKILL.md); the component skill, catalog guidance and machine-readable registry are in [compass-components](compass-components/SKILL.md).
 
-The interface references cover visual direction, practical CSS diagnosis, interactive behavior and sourced lessons from mature products. The component catalog documents when patterns fit, states, accessibility, responsive behavior and implementation tradeoffs. Load only the references relevant to the task; existing stacks and design systems remain authoritative.
+The interface references cover visual direction, practical CSS diagnosis, interactive behavior and sourced lessons from mature products. The component catalog documents when patterns fit, states, accessibility, responsive behavior and implementation tradeoffs. Load only the references relevant to the task; existing stacks and design systems remain authoritative. Each skill can still be used independently, and the contract is optional.
 
 ## Components Catalog
 

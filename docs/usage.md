@@ -42,6 +42,8 @@ For a reusable component implementation, add `compass-components` after the prod
 Use Compass to decide whether this workflow needs persistent navigation. Use Compass Interface for the visual direction, then Compass Components to adapt an appropriate navigation pattern to the existing router, tokens and stack.
 ```
 
+For substantial work that crosses these stages, the skills can persist their owned decisions and dependencies in the optional [Orchestration contract](orchestration.md). The contract carries the handoff forward; each skill remains usable on its own and a small task can keep the current conversational handoff.
+
 For benchmarking, ask for source, interpretation, adaptation and validation. The agent should distinguish documented behavior from an unverified explanation for a company's success. For terminal-only work, expect code-level checks plus a clear statement that rendered appearance was not verified.
 
 ## Expected behavior

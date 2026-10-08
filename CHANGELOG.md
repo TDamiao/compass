@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-08
+
+### Added
+
+- Optional Compass Orchestration contract, versioned schema, cross-reference validator and end-to-end dashboard example.
+- Explicit ownership, handoff, decision lifecycle, supersession impact, conflict and validation rules across the three existing skills.
+
+### Changed
+
+- Updated Compass Core, Interface and Components guidance to consume and preserve the shared contract without requiring it for standalone work.
+
 ## [1.1.0] - 2026-10-08
 
 ### Added

@@ -53,3 +53,5 @@ Compass is organized as three complementary skills:
 3. **Compass Components — Reusable implementation patterns:** how an appropriate pattern can be implemented accessibly and adapted to a project's stack.
 
 The handoff is `Need → Pattern → Adaptation → Implementation → Validation`. A catalog entry is implementation knowledge, not evidence that a component belongs in a product. Existing healthy project components and design tokens take precedence.
+
+Compass Orchestration is the shared, optional contract across the three skills. It persists owned decisions and their dependencies in `.compass/compass.json`; it is not another skill or decision layer. See [the protocol](orchestration.md) for ownership, lifecycle and validation.

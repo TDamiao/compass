@@ -15,6 +15,12 @@ Use the catalog as implementation knowledge for humans and AI coding agents. It 
 
 The sequence is **Need → Pattern → Adaptation → Implementation → Validation**. Resolve product intent before selecting a component. If the decision is already clear, do not repeat discovery.
 
+## Orchestration contract
+
+When `.compass/compass.json` exists, read accepted product and Interface decisions before selecting a pattern. Components owns `components` selections and their decisions: record the interface need, registry pattern ID and status, registry ref, selection (`use`, `adapt`, `defer` or `unavailable`) and a dependency on the Interface decision. The registry remains the source of truth; a `planned` entry must be recorded as deferred or unavailable and must never be promoted here.
+
+Do not change Core or Interface context. If a selected pattern cannot satisfy an accepted need, record a conflict for its owner instead of silently changing the need or interaction model. Preserve replaced decisions through supersession and surface dependent selections for review. Without a contract, keep the existing handoff and catalog workflow. Implementers may choose technical details only while accepted decisions remain intact; record an implementation conflict or validation deviation when that is impossible. Store no hidden reasoning or scratchpad.
+
 ## Procedure
 
 1. **Understand the request.** Name the user task, object, action, context, information density, risk and required states. Clarify only material unknowns.
