@@ -51,7 +51,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - name: Ensure npm supports Trusted Publishing
         run: |
@@ -107,7 +106,11 @@ jobs:
             echo "::error::Version already exists: $PACKAGE@$VERSION"
             exit 1
           fi
-          if [[ "$OUTPUT" != *"E404"* || "$OUTPUT" != *"404 Not Found"* ]]; then
+          if [[ "$OUTPUT" != *"E404"* ]]; then
+            echo "::error::Could not verify whether $PACKAGE@$VERSION is absent from npm"
+            exit 1
+          fi
+          if [[ "$OUTPUT" != *"No match found for version $VERSION"* && "$OUTPUT" != *"404 Not Found"* ]]; then
             echo "::error::Could not verify whether $PACKAGE@$VERSION is absent from npm"
             exit 1
           fi
