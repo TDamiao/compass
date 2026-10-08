@@ -11,9 +11,10 @@ The CLI supports registry schema `1.0.0` and defaults to the immutable `v1.1.0` 
 3. Run root checks: `npm ci`, `npm test`, `npm run build`, `python tests/validate_package.py`, and `node scripts/test-cli-package.mjs`.
 4. Require the CLI package matrix to pass on Ubuntu, macOS and Windows.
 5. Confirm `components-compass@0.1.0` is available and the publisher has permission immediately before an approved release. An `E404` alone does not prove availability.
-6. Configure the GitHub `npm-publish` environment with required reviewers and configure npm Trusted Publishing for `TDamiao/compass`, workflow `publish.yml`, environment `npm-publish`. The environment is not configured in this repository yet.
-7. Only after those protections and the npm publisher are verified, set the repository variable `NPM_PUBLISH_ENABLED=true`; without it, the publish job is skipped. Then create a GitHub release tagged `cli-v0.1.0`, or dispatch the workflow from `main` after that matching tag exists.
-8. The workflow validates the tag/version, checks that this version is not already published, packs and tests the executable on three operating systems, then publishes with npm Trusted Publishing (OIDC).
-9. After an approved successful release, verify `npm view components-compass version` and run `npx --yes --package=components-compass -- compass --version` plus `list` against the pinned registry.
+6. If npm requires the package to exist before Trusted Publishing can be configured, obtain explicit human approval for the one-time bootstrap, then run `npm publish --access public` from `cli/`. Verify `npm view components-compass version` reports `0.1.0`; do not retry blindly.
+7. Configure the GitHub `npm-publish` environment with required reviewers. Configure npm Trusted Publishing for `TDamiao/compass`, workflow `publish.yml`, environment `npm-publish`. The environment is not configured in this repository yet.
+8. Only after those protections and the npm publisher are verified, set the repository variable `NPM_PUBLISH_ENABLED=true`; without it, the publish job is skipped. Then create a GitHub release tagged `cli-v0.1.0`, or dispatch the workflow from `main` after that matching tag exists.
+9. The workflow validates the tag/version, checks that this version is not already published, packs and tests the executable on three operating systems, then publishes with npm Trusted Publishing (OIDC).
+10. After an approved successful release, verify `npm view components-compass version` and run `npx --yes --package=components-compass -- compass --version` plus `list` against the pinned registry.
 
 Never store a permanent npm token in the repository or publish the old scoped package as part of this release. Record a publication only after npm confirms version `0.1.0`.
