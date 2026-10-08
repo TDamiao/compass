@@ -35,6 +35,7 @@ test('real CLI entry point routes output and uses stable exit codes', async (t) 
   const help = await invoke(['--help'], cwd);
   assert.equal(help.status, 0);
   assert.match(help.stdout, /Compass Components\n\nUsage:/);
+  assert.match(help.stdout, /compass search <query>/);
   assert.equal(help.stderr, '');
 
   const version = await invoke(['--version'], cwd);
@@ -48,6 +49,16 @@ test('real CLI entry point routes output and uses stable exit codes', async (t) 
   assert.match(list.stdout, /Sidebar/);
   assert.equal(list.stderr, '');
 
+  const search = await invoke(['search', 'sidebar'], cwd);
+  assert.equal(search.status, 0);
+  assert.match(search.stdout, /\[stable\] Sidebar — Navigation/);
+  assert.equal(search.stderr, '');
+
+  const plannedSearch = await invoke(['search', 'planned'], cwd);
+  assert.equal(plannedSearch.status, 0);
+  assert.match(plannedSearch.stdout, /\[planned\]/);
+  assert.equal(plannedSearch.stderr, '');
+
   const info = await invoke(['info', 'sidebar'], cwd);
   assert.equal(info.status, 0);
   assert.match(info.stdout, /ID: sidebar/);
@@ -59,6 +70,11 @@ test('real CLI entry point routes output and uses stable exit codes', async (t) 
     assert.equal(failure.stdout, '', `stdout for ${args.join(' ')}`);
     assert.match(failure.stderr, /^Error:/, `stderr for ${args.join(' ')}`);
   }
+
+  const missingSearch = await invoke(['search'], cwd);
+  assert.equal(missingSearch.status, 1);
+  assert.equal(missingSearch.stdout, '');
+  assert.match(missingSearch.stderr, /Usage: compass search <query>/);
 });
 
 test('real CLI entry point rejects an unsupported registry schema explicitly', async () => {

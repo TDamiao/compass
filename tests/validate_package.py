@@ -194,8 +194,8 @@ def validate_cli_package():
     except (OSError, json.JSONDecodeError) as error:
         return f"invalid CLI package.json: {error}"
 
-    if package.get("name") != "components-compass" or package.get("version") != "0.1.0":
-        return "CLI package identity must be components-compass@0.1.0"
+    if package.get("name") != "components-compass" or package.get("version") != "0.1.1":
+        return "CLI package identity must be components-compass@0.1.1"
     if package.get("type") != "module":
         return "CLI package must preserve ESM mode"
     engines = package.get("engines", {}).get("node", "")
