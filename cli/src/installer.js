@@ -1,7 +1,9 @@
-import { lstat, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { CliError } from './errors.js';
 import { fetchPatternFiles } from './registry.js';
+
+const packageMetadata = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 
 export async function installPattern(component, { cwd = process.cwd(), fetchImpl = fetch, source }) {
   const outputRoot = path.resolve(cwd, 'compass');
@@ -11,47 +13,58 @@ export async function installPattern(component, { cwd = process.cwd(), fetchImpl
   }
 
   await assertNotSymlink(outputRoot, 'The "compass" output path cannot be a symbolic link.');
-  try {
-    await lstat(destination);
-    throw new CliError(`${component.name} already exists at ${path.relative(cwd, destination)}. No files were changed.`);
-  } catch (error) {
-    if (error instanceof CliError) throw error;
-    if (error.code !== 'ENOENT') throw new CliError(`Cannot inspect the destination: ${error.message}`);
-  }
+  await assertDestinationAbsent(destination, component.name, cwd);
 
   const files = await fetchPatternFiles(component, { fetchImpl, source });
   const metadata = JSON.parse(files.get(`components/${component.id}/component.json`));
   const manifest = {
-    source: 'TDamiao/compass',
+    source: source?.repository ?? 'TDamiao/compass',
+    registryRef: source?.ref ?? 'unknown',
     component: component.id,
-    version: component.version,
-    registryRef: source?.ref ?? 'main',
+    componentVersion: component.version,
+    installedBy: packageMetadata.name,
+    cliVersion: packageMetadata.version,
   };
 
-  let created = false;
+  let staging;
   try {
     await mkdir(outputRoot, { recursive: true });
     await assertNotSymlink(outputRoot, 'The "compass" output path cannot be a symbolic link.');
-    await mkdir(destination);
-    created = true;
+    staging = await mkdtemp(path.join(outputRoot, `.${component.id}-`));
     for (const [registryPath, content] of files) {
       const relativePath = registryPath.slice(`components/${component.id}/`.length);
-      const target = path.resolve(destination, ...relativePath.split('/'));
-      if (!isInside(destination, target)) {
+      const target = path.resolve(staging, ...relativePath.split('/'));
+      if (!isInside(staging, target)) {
         throw new CliError(`Unsafe destination path in registry: ${registryPath}.`);
       }
       await mkdir(path.dirname(target), { recursive: true });
       await writeFile(target, content, { flag: 'wx' });
     }
-    await writeFile(path.join(destination, 'compass-source.json'), `${JSON.stringify(manifest, null, 2)}\n`, { flag: 'wx' });
+    await writeFile(path.join(staging, 'compass-source.json'), `${JSON.stringify(manifest, null, 2)}\n`, { flag: 'wx' });
+    await assertDestinationAbsent(destination, component.name, cwd);
+    await rename(staging, destination);
+    staging = undefined;
   } catch (error) {
-    if (created) await rm(destination, { recursive: true, force: true }).catch(() => {});
+    if (staging) await rm(staging, { recursive: true, force: true }).catch(() => {});
     if (error instanceof CliError) throw error;
+    if (error.code === 'EEXIST' || error.code === 'ENOTEMPTY') {
+      throw new CliError(`${component.name} already exists at ${path.relative(cwd, destination)}. No files were changed.`);
+    }
     throw new CliError(`Could not write ${path.relative(cwd, destination)}: ${error.message}`);
   }
 
   const installedFiles = [...files.keys()].map((file) => file.slice(`components/${component.id}/`.length)).concat('compass-source.json');
   return { destination, files: installedFiles, metadata };
+}
+
+async function assertDestinationAbsent(destination, name, cwd) {
+  try {
+    await lstat(destination);
+    throw new CliError(`${name} already exists at ${path.relative(cwd, destination)}. No files were changed.`);
+  } catch (error) {
+    if (error instanceof CliError) throw error;
+    if (error.code !== 'ENOENT') throw new CliError(`Cannot inspect the destination: ${error.message}`);
+  }
 }
 
 async function assertNotSymlink(target, message) {

@@ -4,17 +4,37 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "Distributes framework-neutral Compass Components reference patterns.",
+  "description": "Browse and install framework-neutral Compass Components reference patterns.",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TDamiao/compass.git",
+    "directory": "cli"
+  },
+  "homepage": "https://github.com/TDamiao/compass",
+  "bugs": {
+    "url": "https://github.com/TDamiao/compass/issues"
   },
   "bin": {
     "compass": "./bin/compass.js"
   },
   "files": [
-    "bin/",
-    "src/",
+    "bin/compass.js",
+    "src/commands.js",
+    "src/errors.js",
+    "src/installer.js",
+    "src/registry.js",
     "README.md",
     "LICENSE"
+  ],
+  "keywords": [
+    "compass",
+    "components",
+    "ui",
+    "patterns",
+    "cli",
+    "design-system"
   ]
 }

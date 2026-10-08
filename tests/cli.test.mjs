@@ -5,7 +5,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { runCli } from '../cli/src/commands.js';
-import { resolveRegistrySource } from '../cli/src/registry.js';
+import { DEFAULT_COMPONENTS_BASE_URL, DEFAULT_REGISTRY_REF, DEFAULT_REGISTRY_URL, SUPPORTED_REGISTRY_SCHEMA, resolveRegistrySource } from '../cli/src/registry.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const registry = JSON.parse(await readFile(path.join(root, 'compass-components', 'registry', 'registry.json'), 'utf8'));
@@ -14,6 +14,10 @@ const componentsBaseUrl = 'https://registry.test/compass-components';
 const source = { repository: 'TDamiao/compass', ref: 'test-ref', registryUrl, componentsBaseUrl };
 
 test('registry source and ref are centralized and replaceable', () => {
+  assert.equal(DEFAULT_REGISTRY_REF, 'main');
+  assert.match(DEFAULT_REGISTRY_URL, /\/main\/compass-components\/registry\/registry\.json$/);
+  assert.match(DEFAULT_COMPONENTS_BASE_URL, /\/main\/compass-components$/);
+  assert.deepEqual(SUPPORTED_REGISTRY_SCHEMA, ['1.0.0']);
   const versioned = resolveRegistrySource({ ref: 'v1.1.0' });
   assert.match(versioned.registryUrl, /\/v1\.1\.0\/compass-components\/registry\/registry\.json$/);
   assert.match(versioned.componentsBaseUrl, /\/v1\.1\.0\/compass-components$/);
@@ -112,9 +116,11 @@ test('add installs every registered Sidebar reference file and provenance', asyn
   const provenance = JSON.parse(await readFile(path.join(destination, 'compass-source.json'), 'utf8'));
   assert.deepEqual(provenance, {
     source: 'TDamiao/compass',
-    component: 'sidebar',
-    version: '1.0.0',
     registryRef: 'test-ref',
+    component: 'sidebar',
+    componentVersion: '1.0.0',
+    installedBy: '@tdamiao/compass-components',
+    cliVersion: JSON.parse(await readFile(path.join(root, 'cli', 'package.json'), 'utf8')).version,
   });
 });
 
@@ -194,6 +200,15 @@ test('runtime registry must satisfy the existing v1 metadata contract', async ()
   const result = await invoke(['list'], { registryOverride: malformed });
   assert.equal(result.code, 1);
   assert.match(result.errors, /invalid component entry/);
+});
+
+test('runtime registry rejects unknown schema versions without falling through', async () => {
+  const unsupported = structuredClone(registry);
+  unsupported.schemaVersion = '2.0.0';
+  const result = await invoke(['list'], { registryOverride: unsupported });
+  assert.equal(result.code, 1);
+  assert.match(result.errors, /Unsupported Compass registry schema: 2\.0\.0/);
+  assert.match(result.errors, /This CLI supports: 1\.0\.0/);
 });
 
 async function exists(pathname) {

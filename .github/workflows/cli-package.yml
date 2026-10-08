@@ -1,0 +1,61 @@
+name: Test Compass CLI package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cli-package.yml'
+      - 'cli/**'
+      - 'compass-components/**'
+      - 'scripts/test-cli-package.mjs'
+      - 'tests/cli*.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/**'
+  pull_request:
+    paths:
+      - '.github/workflows/cli-package.yml'
+      - 'cli/**'
+      - 'compass-components/**'
+      - 'scripts/test-cli-package.mjs'
+      - 'tests/cli*.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-test:
+    name: Pack and install on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Run repository tests
+        run: npm test
+
+      - name: Build catalog
+        run: npm run build
+
+      - name: Validate package structure
+        run: python tests/validate_package.py
+
+      - name: Pack, install and invoke the external CLI package
+        run: node scripts/test-cli-package.mjs

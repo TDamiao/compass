@@ -1,22 +1,51 @@
 import { CliError } from './errors.js';
 
-const REPOSITORY = 'TDamiao/compass';
-const DEFAULT_REF = 'main';
+export const REGISTRY_REPOSITORY = 'TDamiao/compass';
+// Development fallback only. Pin this to the compatible Compass release tag before publishing.
+export const DEFAULT_REGISTRY_REF = 'main';
+export const DEFAULT_REGISTRY_URL = `https://raw.githubusercontent.com/${REGISTRY_REPOSITORY}/${DEFAULT_REGISTRY_REF}/compass-components/registry/registry.json`;
+export const DEFAULT_COMPONENTS_BASE_URL = `https://raw.githubusercontent.com/${REGISTRY_REPOSITORY}/${DEFAULT_REGISTRY_REF}/compass-components`;
+export const SUPPORTED_REGISTRY_SCHEMA = Object.freeze(['1.0.0']);
 const MAX_REGISTRY_BYTES = 2 * 1024 * 1024;
 
 export function resolveRegistrySource({ env = process.env, ref, registryUrl, componentsBaseUrl } = {}) {
-  const selectedRef = ref ?? env.COMPASS_REGISTRY_REF ?? DEFAULT_REF;
+  const selectedRef = ref ?? env.COMPASS_REGISTRY_REF ?? DEFAULT_REGISTRY_REF;
+  if (typeof selectedRef !== 'string' || !/^[A-Za-z0-9._/-]+$/.test(selectedRef)
+    || selectedRef.split('/').some((part) => !part || part === '.' || part === '..')
+    || selectedRef.includes('..')) {
+    throw new CliError('The Compass registry ref is invalid.');
+  }
   const encodedRef = String(selectedRef).split('/').map(encodeURIComponent).join('/');
-  const rawRoot = `https://raw.githubusercontent.com/${REPOSITORY}/${encodedRef}/compass-components`;
-  const baseUrl = trimTrailingSlash(componentsBaseUrl ?? env.COMPASS_COMPONENTS_BASE_URL ?? rawRoot);
-  const resolvedRegistryUrl = registryUrl ?? env.COMPASS_REGISTRY_URL ?? `${baseUrl}/registry/registry.json`;
+  const rawRoot = `https://raw.githubusercontent.com/${REGISTRY_REPOSITORY}/${encodedRef}/compass-components`;
+  const baseUrl = trimTrailingSlash(componentsBaseUrl ?? env.COMPASS_COMPONENTS_BASE_URL ?? (
+    selectedRef === DEFAULT_REGISTRY_REF ? DEFAULT_COMPONENTS_BASE_URL : rawRoot
+  ));
+  const resolvedRegistryUrl = registryUrl ?? env.COMPASS_REGISTRY_URL ?? (
+    componentsBaseUrl || env.COMPASS_COMPONENTS_BASE_URL
+      ? `${baseUrl}/registry/registry.json`
+      : selectedRef === DEFAULT_REGISTRY_REF ? DEFAULT_REGISTRY_URL : `${baseUrl}/registry/registry.json`
+  );
+  assertHttpUrl(baseUrl, 'components base URL');
+  assertHttpUrl(resolvedRegistryUrl, 'registry URL');
 
   return {
-    repository: REPOSITORY,
+    repository: REGISTRY_REPOSITORY,
     ref: selectedRef,
     registryUrl: resolvedRegistryUrl,
     componentsBaseUrl: baseUrl,
   };
+}
+
+function assertHttpUrl(value, label) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new CliError(`The Compass ${label} is invalid.`);
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) {
+    throw new CliError(`The Compass ${label} must use HTTP or HTTPS without embedded credentials.`);
+  }
 }
 
 export async function loadRegistry({ fetchImpl = fetch, source = resolveRegistrySource() } = {}) {
@@ -34,12 +63,10 @@ export async function loadRegistry({ fetchImpl = fetch, source = resolveRegistry
 
   let text;
   try {
-    text = await response.text();
-  } catch {
+    text = await readBoundedText(response, MAX_REGISTRY_BYTES, 'The Compass registry is larger than the supported limit.', 'The Compass registry is not valid UTF-8.');
+  } catch (error) {
+    if (error instanceof CliError) throw error;
     throw new CliError('The Compass registry response could not be read.');
-  }
-  if (Buffer.byteLength(text, 'utf8') > MAX_REGISTRY_BYTES) {
-    throw new CliError('The Compass registry is larger than the supported limit.');
   }
 
   let registry;
@@ -53,9 +80,12 @@ export async function loadRegistry({ fetchImpl = fetch, source = resolveRegistry
 }
 
 export function validateRegistry(registry) {
+  const schemaVersion = isRecord(registry) ? registry.schemaVersion : undefined;
+  if (!SUPPORTED_REGISTRY_SCHEMA.includes(schemaVersion)) {
+    throw new CliError(`Unsupported Compass registry schema: ${schemaVersion ?? 'missing'}\nThis CLI supports: ${SUPPORTED_REGISTRY_SCHEMA.join(', ')}`);
+  }
   const allowedCategories = new Set(['navigation', 'actions', 'data', 'feedback', 'overlay', 'forms', 'ai']);
   if (!isRecord(registry)
-    || registry.schemaVersion !== '1.0.0'
     || registry.name !== 'compass-components'
     || typeof registry.description !== 'string'
     || !registry.description.trim()
@@ -134,12 +164,10 @@ export async function fetchPatternFiles(component, { fetchImpl = fetch, source =
     }
     let content;
     try {
-      content = await response.text();
-    } catch {
+      content = await readBoundedText(response, 1024 * 1024, `Reference file exceeds the 1 MB safety limit: ${file}.`, `Reference file is not valid UTF-8: ${file}.`);
+    } catch (error) {
+      if (error instanceof CliError) throw error;
       throw new CliError(`Reference file could not be read: ${file}.`);
-    }
-    if (Buffer.byteLength(content, 'utf8') > 1024 * 1024) {
-      throw new CliError(`Reference file exceeds the 1 MB safety limit: ${file}.`);
     }
     fileContents.set(file, content);
   }
@@ -157,6 +185,45 @@ export async function fetchPatternFiles(component, { fetchImpl = fetch, source =
     }
   }
   return fileContents;
+}
+
+async function readBoundedText(response, maxBytes, tooLargeMessage, invalidTextMessage) {
+  const declaredSize = Number(response.headers?.get?.('content-length'));
+  if (Number.isFinite(declaredSize) && declaredSize > maxBytes) throw new CliError(tooLargeMessage);
+  if (!response.body?.getReader) {
+    const text = await response.text();
+    if (Buffer.byteLength(text, 'utf8') > maxBytes) throw new CliError(tooLargeMessage);
+    return text;
+  }
+
+  const reader = response.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        throw new CliError(tooLargeMessage);
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  } catch {
+    throw new CliError(invalidTextMessage);
+  }
 }
 
 function isSafeRegistryPath(file, componentId) {

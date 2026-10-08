@@ -10,7 +10,6 @@ export async function runCli(args, options = {}) {
   const stdout = options.stdout ?? ((message) => console.log(message));
   const stderr = options.stderr ?? ((message) => console.error(message));
   const fetchImpl = options.fetchImpl ?? fetch;
-  const source = options.source ?? resolveRegistrySource({ env: options.env ?? process.env });
   const cwd = options.cwd ?? process.cwd();
 
   if (args.length === 1 && ['--help', '-h', 'help'].includes(args[0])) {
@@ -24,6 +23,7 @@ export async function runCli(args, options = {}) {
 
   const [command, id, ...extra] = args;
   try {
+    const source = options.source ?? resolveRegistrySource({ env: options.env ?? process.env });
     if (command === 'list' && id === undefined && extra.length === 0) {
       const registry = await loadRegistry({ fetchImpl, source });
       stdout(formatList(registry));
@@ -87,14 +87,21 @@ export function formatInfo(component) {
 
 function helpText() {
   return [
-    'Compass Components CLI',
+    'Compass Components',
     '',
     'Usage:',
     '  compass list',
     '  compass info <component>',
     '  compass add <component>',
-    '  compass --help',
-    '  compass --version',
+    '',
+    'Commands:',
+    '  list    List available patterns',
+    '  info    Inspect a pattern',
+    '  add     Add a reference pattern',
+    '',
+    'Options:',
+    '  --help',
+    '  --version',
   ].join('\n');
 }
 
