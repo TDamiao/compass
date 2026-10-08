@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { runCli } from '../cli/src/commands.js';
+import { runCli, searchComponents } from '../cli/src/commands.js';
 import { DEFAULT_COMPONENTS_BASE_URL, DEFAULT_REGISTRY_REF, DEFAULT_REGISTRY_URL, SUPPORTED_REGISTRY_SCHEMA, resolveRegistrySource } from '../cli/src/registry.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -79,6 +79,70 @@ test('list derives categories and statuses from the source registry', async () =
     if (first) assert.ok(result.out.includes(first.name), `missing ${first.name} under ${category}`);
   }
   assert.equal(result.out.includes('undefined'), false);
+});
+
+test('search matches IDs, names, partial text, categories and statuses deterministically', () => {
+  assert.deepEqual(searchComponents(registry, 'sidebar').map((component) => component.id), ['sidebar']);
+  assert.deepEqual(searchComponents(registry, 'data table').map((component) => component.id), ['data-table']);
+  const partial = searchComponents(registry, 'table');
+  assert.deepEqual(partial.map((component) => component.id), ['data-table']);
+  assert.deepEqual(searchComponents(registry, 'SIDEBAR').map((component) => component.id), ['sidebar']);
+  assert.deepEqual(searchComponents(registry, 'frequent destination changes').map((component) => component.id), ['sidebar']);
+
+  const navigation = searchComponents(registry, 'navigation');
+  assert.ok(navigation.length > 1);
+  assert.ok(navigation.some((component) => component.category === 'navigation'));
+  assert.deepEqual(navigation.map((component) => component.id), searchComponents(registry, 'navigation').map((component) => component.id));
+  assert.ok(searchComponents(registry, 'navig').some((component) => component.category === 'navigation'));
+
+  const planned = searchComponents(registry, 'planned');
+  assert.ok(planned.length > 1);
+  assert.ok(planned.every((component) => component.status === 'planned'));
+  assert.ok(searchComponents(registry, 'plan').length > 1);
+});
+
+test('search prioritizes exact and prefix matches, and no matches are an empty result', () => {
+  const exactName = { ...registry.components[0], id: 'other-pattern', name: 'Sidebar' };
+  const idPrefix = { ...registry.components[0], id: 'sidebar-extra', name: 'Side Extra' };
+  const namePrefix = { ...registry.components[0], id: 'another-pattern', name: 'Sidebar Extra' };
+  const substring = { ...registry.components[0], id: 'other', name: 'A Sidebar Pattern' };
+  const ranked = { components: [substring, namePrefix, idPrefix, exactName, registry.components.find((item) => item.id === 'sidebar')] };
+  assert.deepEqual(searchComponents(ranked, 'sidebar').map((component) => component.id), [
+    'sidebar', 'other-pattern', 'sidebar-extra', 'another-pattern', 'other',
+  ]);
+  assert.deepEqual(searchComponents(registry, 'spaceship'), []);
+});
+
+test('search command requires a query and returns success when there are no results', async () => {
+  const missing = await invoke(['search'], { fetchImpl: () => assert.fail('missing query must not fetch') });
+  assert.equal(missing.code, 1);
+  assert.equal(missing.out, '');
+  assert.match(missing.errors, /Usage: compass search <query>/);
+
+  const blank = await invoke(['search', '   '], { fetchImpl: () => assert.fail('blank query must not fetch') });
+  assert.equal(blank.code, 1);
+  assert.match(blank.errors, /Usage: compass search <query>/);
+
+  const missingResults = await invoke(['search', 'spaceship']);
+  assert.equal(missingResults.code, 0);
+  assert.equal(missingResults.errors, '');
+  assert.equal(missingResults.out, 'No Compass patterns found for "spaceship".');
+});
+
+test('search command displays category and status for multiple matches', async () => {
+  const nameQuery = await invoke(['search', 'data', 'table']);
+  assert.equal(nameQuery.code, 0);
+  assert.match(nameQuery.out, /Data Table/);
+
+  const navigation = await invoke(['search', 'navigation']);
+  assert.equal(navigation.code, 0);
+  assert.match(navigation.out, /\[stable\] Sidebar — Navigation/);
+  assert.match(navigation.out, /\[planned\] Tabs — Navigation/);
+
+  const ai = await invoke(['search', 'ai']);
+  assert.equal(ai.code, 0);
+  assert.match(ai.out, /— AI/);
+  assert.match(ai.out, /\[planned\]/);
 });
 
 test('info describes stable and planned patterns without implying planned files exist', async () => {

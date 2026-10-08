@@ -40,7 +40,7 @@ try {
   assert.equal(pack.status, 0, pack.stderr || pack.stdout);
   const packed = JSON.parse(pack.stdout)[0];
   assert.equal(packed.name, 'components-compass');
-  assert.equal(packed.version, '0.1.0');
+  assert.equal(packed.version, '0.1.1');
   const tarball = path.join(temporaryRoot, packed.filename);
   const contents = packed.files.map(({ path: file }) => file).sort();
   const expected = [
@@ -59,7 +59,7 @@ try {
   assert.ok(['compass', 'compass.cmd', 'compass.ps1'].some((name) => existsSync(path.join(executableDir, name))), 'npm must install the compass executable shim');
   const ephemeral = await run(process.execPath, [npmCli, 'exec', '--yes', '--offline', `--package=${tarball}`, '--', 'compass', '--version'], { cwd: project, env: npmEnvironment });
   assert.equal(ephemeral.status, 0, ephemeral.stderr || ephemeral.stdout);
-  assert.equal(ephemeral.stdout.trim(), '0.1.0', 'npx package mode must execute the compass binary from the tarball');
+  assert.equal(ephemeral.stdout.trim(), '0.1.1', 'npx package mode must execute the compass binary from the tarball');
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}/compass-components`;
   const env = {
@@ -70,8 +70,10 @@ try {
   };
   const commands = [
     ['--version', (result) => assert.equal(result.stdout.trim(), packed.version)],
-    ['--help', (result) => assert.match(result.stdout, /Usage:\n  compass list\n  compass info <component>\n  compass add <component>/)],
+    ['--help', (result) => assert.match(result.stdout, /compass search <query>/)],
     ['list', (result) => assert.match(result.stdout, /Sidebar/)],
+    ['search', 'sidebar', (result) => assert.match(result.stdout, /\[stable\] Sidebar/)],
+    ['search', 'planned', (result) => assert.match(result.stdout, /\[planned\]/)],
     ['info', 'sidebar', (result) => assert.match(result.stdout, /ID: sidebar/)],
     ['info', 'tabs', (result) => assert.match(result.stdout, /Status: planned/)],
     ['add', 'sidebar', (result) => assert.match(result.stdout, /compass[\\/]sidebar[\\/]README\.md/)],

@@ -1,6 +1,6 @@
 # Compass Components CLI
 
-The `components-compass` npm package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. Its first public release is `0.1.0`. This version was bootstrapped manually; GitHub Actions Trusted Publishing/OIDC is configured for subsequent CLI releases.
+The `components-compass` npm package provides the `compass` command for browsing the Compass Components registry and installing framework-neutral reference patterns. Its first public release, `0.1.0`, was bootstrapped manually. Subsequent releases use GitHub Actions Trusted Publishing/OIDC.
 
 ## Usage
 
@@ -8,6 +8,8 @@ Run a command without a global install:
 
 ```sh
 npx --yes --package=components-compass -- compass list
+npx --yes --package=components-compass -- compass search <query>
+npx --yes --package=components-compass -- compass search sidebar
 npx --yes --package=components-compass -- compass info sidebar
 npx --yes --package=components-compass -- compass add sidebar
 ```
@@ -44,4 +46,4 @@ All default registry URLs and the default ref are centralized in `src/registry.j
 
 For local development and tests, configure `COMPASS_REGISTRY_REF`, `COMPASS_REGISTRY_URL`, and `COMPASS_COMPONENTS_BASE_URL`. If both URL variables are set, the registry and component files can be served from a local or alternate host. Tests do not require GitHub access.
 
-Compass `1.1.0` is the current ecosystem release. The CLI remains `0.1.0` on its own SemVer track, and components keep their own versions in registry metadata. See [the CLI release procedure](../docs/releasing-cli.md).
+Compass `1.1.0` is the current ecosystem release. The CLI has its own SemVer track, separate from Compass and from the component versions in registry metadata. See [the CLI release procedure](../docs/releasing-cli.md).

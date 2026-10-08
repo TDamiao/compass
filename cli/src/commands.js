@@ -29,6 +29,14 @@ export async function runCli(args, options = {}) {
       stdout(formatList(registry));
       return 0;
     }
+    if (command === 'search') {
+      const query = [id, ...extra].filter((part) => typeof part === 'string').join(' ').trim();
+      if (!query) throw new CliError('Usage: compass search <query>');
+      const registry = await loadRegistry({ fetchImpl, source });
+      const matches = searchComponents(registry, query);
+      stdout(matches.length ? formatSearch(query, matches) : `No Compass patterns found for "${query}".`);
+      return 0;
+    }
     if ((command === 'info' || command === 'add') && id && extra.length === 0) {
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new CliError('Pattern IDs must use lowercase letters, numbers and hyphens.');
       const registry = await loadRegistry({ fetchImpl, source });
@@ -85,17 +93,55 @@ export function formatInfo(component) {
   return lines.join('\n');
 }
 
+export function searchComponents(registry, query) {
+  const normalizedQuery = typeof query === 'string' ? query.trim().toLowerCase() : '';
+  if (!normalizedQuery) return [];
+
+  return registry.components
+    .map((component, index) => {
+      const id = component.id.toLowerCase();
+      const name = component.name.toLowerCase();
+      const textFields = [id, name, component.description].map((value) => value.toLowerCase());
+      const facets = [component.category, component.status].map((value) => value.toLowerCase());
+      let rank = 4;
+      if (id === normalizedQuery) rank = 0;
+      else if (name === normalizedQuery) rank = 1;
+      else if (id.startsWith(normalizedQuery)) rank = 2;
+      else if (name.startsWith(normalizedQuery)) rank = 3;
+      else if (textFields.some((value) => value.includes(normalizedQuery))) rank = 4;
+      // Category and status remain searchable without making "table" match "stable".
+      else if (facets.some((value) => value === normalizedQuery || value.startsWith(normalizedQuery))) rank = 5;
+      else return null;
+      return { component, index, rank };
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.rank - right.rank || left.index - right.index)
+    .map(({ component }) => component);
+}
+
+function formatSearch(query, matches) {
+  const lines = [`Search results for "${query}"`];
+  for (const component of matches) {
+    const status = component.status === 'stable' ? '[stable]' : `[${component.status}]`;
+    lines.push(`  ${status} ${component.name} — ${titleCase(component.category)}`);
+    lines.push(`    ${component.description}`);
+  }
+  return lines.join('\n');
+}
+
 function helpText() {
   return [
     'Compass Components',
     '',
     'Usage:',
     '  compass list',
+    '  compass search <query>',
     '  compass info <component>',
     '  compass add <component>',
     '',
     'Commands:',
     '  list    List available patterns',
+    '  search <query>    Search available patterns',
     '  info    Inspect a pattern',
     '  add     Add a reference pattern',
     '',
