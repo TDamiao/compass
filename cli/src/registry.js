@@ -1,8 +1,8 @@
 import { CliError } from './errors.js';
 
 export const REGISTRY_REPOSITORY = 'TDamiao/compass';
-// Development fallback only. Pin this to the compatible Compass release tag before publishing.
-export const DEFAULT_REGISTRY_REF = 'main';
+// Default to the immutable Compass release snapshot supported by this CLI version.
+export const DEFAULT_REGISTRY_REF = 'v1.1.0';
 export const DEFAULT_REGISTRY_URL = `https://raw.githubusercontent.com/${REGISTRY_REPOSITORY}/${DEFAULT_REGISTRY_REF}/compass-components/registry/registry.json`;
 export const DEFAULT_COMPONENTS_BASE_URL = `https://raw.githubusercontent.com/${REGISTRY_REPOSITORY}/${DEFAULT_REGISTRY_REF}/compass-components`;
 export const SUPPORTED_REGISTRY_SCHEMA = Object.freeze(['1.0.0']);

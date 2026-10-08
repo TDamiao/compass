@@ -1,7 +1,6 @@
 {
   "name": "@tdamiao/compass-components",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "license": "MIT",
   "description": "Browse and install framework-neutral Compass Components reference patterns.",

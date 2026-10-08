@@ -14,9 +14,9 @@ const componentsBaseUrl = 'https://registry.test/compass-components';
 const source = { repository: 'TDamiao/compass', ref: 'test-ref', registryUrl, componentsBaseUrl };
 
 test('registry source and ref are centralized and replaceable', () => {
-  assert.equal(DEFAULT_REGISTRY_REF, 'main');
-  assert.match(DEFAULT_REGISTRY_URL, /\/main\/compass-components\/registry\/registry\.json$/);
-  assert.match(DEFAULT_COMPONENTS_BASE_URL, /\/main\/compass-components$/);
+  assert.equal(DEFAULT_REGISTRY_REF, 'v1.1.0');
+  assert.match(DEFAULT_REGISTRY_URL, new RegExp(`/${DEFAULT_REGISTRY_REF}/compass-components/registry/registry\\.json$`));
+  assert.match(DEFAULT_COMPONENTS_BASE_URL, new RegExp(`/${DEFAULT_REGISTRY_REF}/compass-components$`));
   assert.deepEqual(SUPPORTED_REGISTRY_SCHEMA, ['1.0.0']);
   const versioned = resolveRegistrySource({ ref: 'v1.1.0' });
   assert.match(versioned.registryUrl, /\/v1\.1\.0\/compass-components\/registry\/registry\.json$/);
