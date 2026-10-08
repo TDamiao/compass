@@ -1,0 +1,55 @@
+name: Publish Compass CLI to npm
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'cli-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: npm-publish
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Validate package
+        run: python ../tests/validate_package.py
+      - name: Check published version
+        id: version
+        shell: bash
+        run: |
+          PACKAGE=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "package=$PACKAGE" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_EVENT_NAME" == "release" && "$GITHUB_REF_NAME" != "cli-v$VERSION" ]]; then
+            echo "::error::Release tag must match cli-v$VERSION"
+            exit 1
+          fi
+          if npm view "$PACKAGE@$VERSION" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "::error::Version already published: $PACKAGE@$VERSION"
+            exit 1
+          fi
+      - name: Pack dry run
+        run: npm pack --dry-run
+      - name: Publish with npm Trusted Publishing (OIDC)
+        run: npm publish --access public --provenance
