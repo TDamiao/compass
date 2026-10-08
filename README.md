@@ -58,7 +58,7 @@ Install `compass`, `compass-interface` and, when relevant, `compass-components` 
 
 ### OpenClaw
 
-From the published Git ref, use `openclaw skills install git:TDamiao/compass@v1.0.0` for the root `compass` skill; from a checkout, use `openclaw skills install . --as compass`. The companion folders are installed separately from a checkout. See [docs/openclaw.md](docs/openclaw.md).
+From the published Git ref, use `openclaw skills install git:TDamiao/compass@v1.1.0` for the root `compass` skill; from a checkout, use `openclaw skills install . --as compass`. The companion folders are installed separately from a checkout. See [docs/openclaw.md](docs/openclaw.md).
 
 ## How it works
 
@@ -92,7 +92,7 @@ Compass Core is runtime-agnostic and introduces no telemetry, credentials, netwo
 
 ## Versioning and publishing
 
-Compass follows SemVer. The canonical source is [github.com/TDamiao/compass](https://github.com/TDamiao/compass). Stable release refs should use `v1`, `v1.0` and `v1.0.0` as appropriate for a runtime. Do not create or push tags from this package without repository authorization.
+Compass follows SemVer. The canonical source is [github.com/TDamiao/compass](https://github.com/TDamiao/compass). Use immutable release tags when a runtime install needs reproducibility. Do not create or push tags without repository authorization.
 
 OpenClaw publication is prepared but not performed. See [docs/contributing.md](docs/contributing.md) and [docs/compatibility.md](docs/compatibility.md).
 

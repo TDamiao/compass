@@ -7,7 +7,7 @@ OpenClaw treats each skill as a folder rooted by `SKILL.md` and supports the opt
 After publication:
 
 ```bash
-openclaw skills install git:TDamiao/compass@v1.0.0
+openclaw skills install git:TDamiao/compass@v1.1.0
 ```
 
 The `@ref` is optional when installing the default Git ref; pin a release when reproducibility matters. Git/local installs require `SKILL.md` at the source root, which is why this package keeps it there.
@@ -17,7 +17,7 @@ The `@ref` is optional when installing the default Git ref; pin a release when r
 By default, installation targets the active workspace `skills/` directory and is available to that workspace/agent. For all local agents, use:
 
 ```bash
-openclaw skills install git:TDamiao/compass@v1.0.0 --global
+openclaw skills install git:TDamiao/compass@v1.1.0 --global
 ```
 
 From a checkout:
@@ -38,7 +38,7 @@ openclaw skills install ./compass-components --as compass-components
 For one configured agent, target the agent workspace explicitly:
 
 ```bash
-openclaw skills install git:TDamiao/compass@v1.0.0 --agent <id>
+openclaw skills install git:TDamiao/compass@v1.1.0 --agent <id>
 ```
 
 Use workspace installation for project-specific behavior; use `--global` only when the same version should be shared across local agents. Agent allowlists can still narrow visibility.
@@ -61,7 +61,7 @@ openclaw skills verify @TDamiao/compass --card
 `openclaw skills update --all` updates workspace ClawHub installs; `openclaw skills update @TDamiao/compass --global` updates a shared ClawHub install. OpenClaw does not update Git or local installs through this mechanism. Refresh a Git install by reinstalling the source, using `--force` when the existing workspace slug must be replaced:
 
 ```bash
-openclaw skills install git:TDamiao/compass@v1.0.0 --force
+openclaw skills install git:TDamiao/compass@v1.1.0 --force
 ```
 
 For a local checkout, rerun `openclaw skills install ./path/to/compass --as compass --force`. For ClawHub installs, the official removal command is provided by the standalone CLI:
@@ -82,7 +82,7 @@ Compass is not published automatically. After authorization, from the package ro
 ```bash
 npm i -g clawhub
 clawhub login
-clawhub skill publish ./compass --slug compass --name "Compass" --version 1.0.0 --dry-run
+clawhub skill publish ./compass --slug compass --name "Compass" --version 1.1.0 --dry-run
 ```
 
 Review the dry run, then publish without `--dry-run`. ClawHub performs validation and automated security checks. Future users can install `@TDamiao/compass` through OpenClaw. The ClawHub CLI and native OpenClaw commands are separate surfaces: use `clawhub` for auth/publishing and `openclaw skills` for runtime installation.

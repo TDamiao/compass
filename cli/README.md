@@ -26,11 +26,11 @@ The CLI installs reference files for adaptation. It does not integrate them into
 
 ## Registry source and compatibility
 
-All default registry URLs and the development ref are centralized in `src/registry.js`. At this release-candidate stage, the development fallback is `main` because the proposed release tag does not exist yet. Before publishing, pin `DEFAULT_REGISTRY_REF` to the immutable Compass release tag that contains the compatible registry. The CLI explicitly supports registry schema `1.0.0`; unknown schema versions fail with an error instead of being interpreted.
+All default registry URLs and the development ref are centralized in `src/registry.js`. The Compass `v1.1.0` tag provides an immutable registry snapshot, but this ecosystem release leaves the CLI default on the development fallback `main`. Pin `DEFAULT_REGISTRY_REF` to `v1.1.0` in a later CLI-specific release before publishing. The CLI explicitly supports registry schema `1.0.0`; unknown schema versions fail with an error instead of being interpreted.
 
 For local development and tests, configure `COMPASS_REGISTRY_REF`, `COMPASS_REGISTRY_URL`, and `COMPASS_COMPONENTS_BASE_URL`. If both URL variables are set, the registry and component files can be served from a local or alternate host. Tests do not require GitHub access.
 
-The current recommendation is Compass `1.1.0` for the next ecosystem release and CLI `0.1.0` on its own SemVer track. Components keep their own versions in registry metadata. See [the CLI release procedure](../docs/releasing-cli.md).
+Compass `1.1.0` is the current ecosystem release. The CLI remains `0.1.0` on its own SemVer track, and components keep their own versions in registry metadata. See [the CLI release procedure](../docs/releasing-cli.md).
 
 ## Package name
 

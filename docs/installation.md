@@ -6,11 +6,11 @@ This repository contains three independent skill bundles: `compass` at the root,
 | --- | --- | --- |
 | Codex | Compatible | Copy to `.agents/skills/compass/` for a project or `~/.agents/skills/compass/` for a user |
 | Hermes Agent | Documented multi-file support; runtime test pending | Install each skill's explicit GitHub path or copy sibling bundles; root Compass URL details are in [Hermes](hermes.md) |
-| OpenClaw | Native | `openclaw skills install git:TDamiao/compass@v1.0.0` |
+| OpenClaw | Native | `openclaw skills install git:TDamiao/compass@v1.1.0` |
 
 The OpenClaw Git command installs the root `compass` skill. Install `compass-interface` and `compass-components` separately from their folders in a local checkout; see [OpenClaw](openclaw.md).
 
-`compass-components` contains a registry and framework-neutral guidance plus dependency-free HTML/CSS/JavaScript reference examples. It has no CLI yet; copy or adapt the documented implementation files into the target project. Registry entries describe both available and planned patterns.
+`compass-components` contains a registry and framework-neutral guidance plus dependency-free HTML/CSS/JavaScript reference examples. A CLI is available in `cli/`, but its npm package remains private and unpublished. See [the CLI guide](../cli/README.md) for its commands and package status. Registry entries describe both available and planned patterns.
 
 The public-facing Components Catalog is a separate static app in [`catalog/`](../catalog/README.md). Run `npm install` and `npm run dev` from the repository root to work on it; its build output is `dist/`.
 
